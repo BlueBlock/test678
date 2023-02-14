@@ -85,9 +85,7 @@ function Resolve-UpdateCheckFileName {
     Write-Output $fileName
 }
 
-Write-Output "+===========================================================================================+"
-Write-Output "|                Beginning mRemoteNG Create UpdateCheck Files Post Build                    |"
-Write-Output "+===========================================================================================+"
+Write-Output "Beginning create_upg_chk_files.ps1"
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
@@ -130,6 +128,4 @@ if ($UpdateChannel -ne "") {
     }    
 }
 
-Write-Output "+===========================================================================================+"
-Write-Output "|                DONE: Beginning mRemoteNG Create UpdateCheck Files Post Build                    |"
-Write-Output "+===========================================================================================+"
+Write-Output "End create_upg_chk_files.ps1"
