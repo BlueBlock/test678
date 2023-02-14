@@ -130,3 +130,6 @@ if ($UpdateChannel -ne "") {
     }    
 }
 
+Write-Output "+===========================================================================================+"
+Write-Output "|                DONE: Beginning mRemoteNG Create UpdateCheck Files Post Build                    |"
+Write-Output "+===========================================================================================+"
