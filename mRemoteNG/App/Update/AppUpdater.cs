@@ -86,14 +86,47 @@ namespace mRemoteNG.App.Update
 
         public bool IsUpdateAvailable()
         {
+            // It is expected that channels will will always be newer in the respective direction: Stable, Preview, Nightly
+            // Therefore updating 'backwards; is checked and prevented. ex: updating from Nightly to Preview
+            // Updating 'backwards' is to be supported when a 'backwards' channel's major.minor.build is greater than the 'forward' channel.
+            // ex: 1.77.3-NB100 can be upgraded to 1.77.4-PB-50
+            // ex: 1.77.3-NB100 can be upgraded to 1.77.4 (Stable)
+            // ex: 1.77.3-PB50 can be upgraded to 1.77.4 (Stable)
+            //
+
             if (CurrentUpdateInfo == null || !CurrentUpdateInfo.IsValid)
             {
                 return false;
             }
 
-            return CurrentUpdateInfo.Version > GeneralAppInfo.GetApplicationVersion();
+            Version currentApplicationVersion = GeneralAppInfo.GetApplicationVersion();
+
+            // 1: Regardless of channel, if [major.minor.build] of an update is greater, then an upgrade is available.
+            if (new Version(CurrentUpdateInfo.Version.Major, CurrentUpdateInfo.Version.Minor, CurrentUpdateInfo.Version.Build) > new Version(currentApplicationVersion.Major, currentApplicationVersion.Minor, currentApplicationVersion.Build))
+            {
+                return true;
+            }
+
+            // 2: The channels to be compared at this point should be the same, otherwise there is no update.
+            switch (OptionsUpdatesPage.Default.UpdateChannel)
+            {
+                // The current application's channel and the update channel are the same.
+                case UpdateChannelInfo.PREVIEW or UpdateChannelInfo.PREVIEW_MSI or UpdateChannelInfo.PREVIEW_PORTABLE when
+                    !currentApplicationVersion.ToString().Contains("-PB"):
+                case UpdateChannelInfo.NIGHTLY or UpdateChannelInfo.NIGHTLY_MSI or UpdateChannelInfo.NIGHTLY_PORTABLE when
+                    !currentApplicationVersion.ToString().Contains("-NB"):
+                    return false;
+            }
+
+            // 3: The channels are the same. The [major,minor,build] are the same. Just compare the fourth value [-{Channel}{CI-Build-Version]
+            int applicationRevision =
+                Convert.ToInt32(currentApplicationVersion.Build.ToString().Replace("-NB", "").Replace("-PB", ""));
+            int updateRevision =
+                Convert.ToInt32(CurrentUpdateInfo.Version.Build.ToString().Replace("-NB", "").Replace("-PB", ""));
+
+            return updateRevision > applicationRevision;
         }
-        
+
         public async Task DownloadUpdateAsync(IProgress<int> progress)
         {
             if (IsGetUpdateInfoRunning)
@@ -160,21 +193,21 @@ namespace mRemoteNG.App.Update
                 }
 
 #if !PORTABLE
-                    var updateAuthenticode = new Authenticode(CurrentUpdateInfo.UpdateFilePath)
-                    {
-                        RequireThumbprintMatch = true,
-                        ThumbprintToMatch = CurrentUpdateInfo.CertificateThumbprint
-                    };
+                var updateAuthenticode = new Authenticode(CurrentUpdateInfo.UpdateFilePath)
+                {
+                    RequireThumbprintMatch = true,
+                    ThumbprintToMatch = CurrentUpdateInfo.CertificateThumbprint
+                };
 
-                    if (updateAuthenticode.Verify() != Authenticode.StatusValue.Verified)
+                if (updateAuthenticode.Verify() != Authenticode.StatusValue.Verified)
+                {
+                    if (updateAuthenticode.Status == Authenticode.StatusValue.UnhandledException)
                     {
-                        if (updateAuthenticode.Status == Authenticode.StatusValue.UnhandledException)
-                        {
-                            throw updateAuthenticode.Exception;
-                        }
-
-                        throw new Exception(updateAuthenticode.GetStatusMessage());
+                        throw updateAuthenticode.Exception;
                     }
+
+                    throw new Exception(updateAuthenticode.GetStatusMessage());
+                }
 #endif
 
                 using var checksum = SHA512.Create();
@@ -183,7 +216,9 @@ namespace mRemoteNG.App.Update
                 var hashString = BitConverter.ToString(hash).Replace("-", "").ToUpperInvariant();
                 if (!hashString.Equals(CurrentUpdateInfo.Checksum))
                     throw new Exception("SHA512 Hashes didn't match!");
-            } finally{
+            }
+            finally
+            {
                 _getUpdateInfoCancelToken?.Dispose();
                 _getUpdateInfoCancelToken = null;
             }
@@ -224,6 +259,7 @@ namespace mRemoteNG.App.Update
                 _getUpdateInfoCancelToken = new CancellationTokenSource();
                 var updateInfo = await _httpClient.GetStringAsync(UpdateChannelInfo.GetUpdateChannelInfo(), _getUpdateInfoCancelToken.Token);
                 CurrentUpdateInfo = UpdateInfo.FromString(updateInfo);
+                File.WriteAllTextAsync("C:\\github-source\\mRemoteNG\\mRemoteNG\\bin\\x64\\Release Portable\\update-file.txt", updateInfo);
                 Properties.OptionsUpdatesPage.Default.CheckForUpdatesLastCheck = DateTime.UtcNow;
 
                 if (!Properties.OptionsUpdatesPage.Default.UpdatePending)
