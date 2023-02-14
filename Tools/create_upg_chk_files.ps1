@@ -89,13 +89,10 @@ Write-Output "Begin create_upg_chk_files.ps1"
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
-    write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Nightly"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Preview)") {
-    write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Preview"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Stable)") {
-    write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Stable"
 } else {
     $UpdateChannel = ""
