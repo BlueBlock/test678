@@ -101,6 +101,8 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
+write-host "Type = $Type"
+
 if ($UpdateChannel -ne "") {
 
     if ($Type -eq "Normal") {
