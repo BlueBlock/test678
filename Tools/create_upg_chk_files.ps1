@@ -102,12 +102,13 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
-write-host "Type = $Type $env:APPVEYOR_PROJECT_NAME"
+$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
+write-host "buildFolder = $buildFolder -- Type = $Type $env:APPVEYOR_PROJECT_NAME"
 
 if ($UpdateChannel -ne "") {
 
     if ($Type -eq "Normal") {
-        $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve
+        $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
         $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
         $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
         if (![string]::IsNullOrEmpty($msiFile)) {
