@@ -102,7 +102,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
-$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve
+$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
 write-host "buildFolder = $buildFolder -- Type = $Type $env:APPVEYOR_PROJECT_NAME"
 
 if ($UpdateChannel -ne "") {
