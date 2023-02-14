@@ -275,7 +275,7 @@ namespace mRemoteNG.App.Update
 
             try
             {
-                var tt = UpdateChannelInfo.GetUpdateChannelInfo();
+                //var tt = UpdateChannelInfo.GetUpdateChannelInfo();
 
                 _getUpdateInfoCancelToken = new CancellationTokenSource();
                 var updateInfo = await _httpClient.GetStringAsync(UpdateChannelInfo.GetUpdateChannelInfo(), _getUpdateInfoCancelToken.Token);

@@ -81,7 +81,7 @@ namespace mRemoteNG.App.Info
             var t1 = new Uri(new Uri(Properties.OptionsUpdatesPage.Default.UpdateAddress),
                            new Uri(GetChannelFileName(channel), UriKind.Relative));
 
-            t1 = new Uri(new Uri(Properties.OptionsUpdatesPage.Default.UpdateAddress.Replace("https://mremoteng.org", "https://raw.githubusercontent.com/BlueBlock/test678/main")), new Uri(GetChannelFileName(channel), UriKind.Relative));
+            t1 = new Uri(new Uri(Properties.OptionsUpdatesPage.Default.UpdateAddress.Replace("https://mremoteng.org", "https://raw.githubusercontent.com/BlueBlock/test678/main/mRemoteNGTests/Resources")), new Uri(GetChannelFileName(channel), UriKind.Relative));
 
             File.AppendAllText("C:\\github-source\\debug.log", "GetUpdateTxtUri: " + t1);
             return t1;
