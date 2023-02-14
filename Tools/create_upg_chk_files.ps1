@@ -105,21 +105,18 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
 write-host "buildFolder = $buildFolder -- Type = $Type $env:APPVEYOR_PROJECT_NAME"
 
-if ($UpdateChannel -ne "") {
-
-    if ($Type -eq "Normal") {
-        $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
-        $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
-        $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
-        if (![string]::IsNullOrEmpty($msiFile)) {
-            $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
-            $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
-            Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
-            Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
-            write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
-        }
+$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
+if ($buildFolder -ne "") {
+    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
+    $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
+    if (![string]::IsNullOrEmpty($msiFile)) {
+        $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
+        $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
+        Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
+        Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
+        write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
     }
-            
+        
     # build zip update file
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
@@ -129,7 +126,9 @@ if ($UpdateChannel -ne "") {
         Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
         write-host "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
-    }    
+    }
+} else {
+    write-host "BuildFolder not found"
 }
 
 Write-Output "End create_upg_chk_files.ps1"
