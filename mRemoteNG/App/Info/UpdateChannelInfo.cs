@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using mRemoteNG.Properties;
 
 // ReSharper disable InconsistentNaming
@@ -25,27 +23,18 @@ namespace mRemoteNG.App.Info
         public static Uri GetUpdateChannelInfo()
         {
             var channel = IsValidChannel(Properties.OptionsUpdatesPage.Default.UpdateChannel) ? Properties.OptionsUpdatesPage.Default.UpdateChannel : STABLE;
-            File.AppendAllText("C:\\github-source\\debug.log", "channel: " + channel);
-            var e1 = GetUpdateTxtUri(channel);
-            File.AppendAllText("C:\\github-source\\debug.log", "GetUpdateTxtUri: " + e1);
-            return e1;
+            return GetUpdateTxtUri(channel);
         }
 
         private static string GetChannelFileName(string channel)
         {
-            var w1 = Runtime.IsPortableEdition
+            return Runtime.IsPortableEdition
                 ? GetChannelFileNamePortableEdition(channel)
                 : GetChannelFileNameNormalEdition(channel);
-
-            File.AppendAllText("C:\\github-source\\debug.log", "GetChannelFileName: " + w1);
-
-            return w1;
         }
 
         private static string GetChannelFileNameNormalEdition(string channel)
         {
-            File.AppendAllText("C:\\github-source\\debug.log", "GetChannelFileNameNormalEdition: " + channel);
-            
             switch (channel)
             {
                 case STABLE:
@@ -61,8 +50,6 @@ namespace mRemoteNG.App.Info
 
         private static string GetChannelFileNamePortableEdition(string channel)
         {
-            File.AppendAllText("C:\\github-source\\debug.log", "GetChannelFileNamePortableEdition: " + channel);
-            
             switch (channel)
             {
                 case STABLE:
@@ -78,13 +65,8 @@ namespace mRemoteNG.App.Info
 
         private static Uri GetUpdateTxtUri(string channel)
         {
-            var t1 = new Uri(new Uri(Properties.OptionsUpdatesPage.Default.UpdateAddress),
+            return new Uri(new Uri(Properties.OptionsUpdatesPage.Default.UpdateAddress),
                            new Uri(GetChannelFileName(channel), UriKind.Relative));
-
-            t1 = new Uri(new Uri(Properties.OptionsUpdatesPage.Default.UpdateAddress.Replace("https://mremoteng.org", "https://raw.githubusercontent.com/BlueBlock/test678/main/mRemoteNGTests/Resources")), new Uri(GetChannelFileName(channel), UriKind.Relative));
-
-            File.AppendAllText("C:\\github-source\\debug.log", "GetUpdateTxtUri: " + t1);
-            return t1;
         }
 
         private static bool IsValidChannel(string s)
