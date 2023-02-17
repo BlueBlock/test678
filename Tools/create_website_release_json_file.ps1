@@ -85,6 +85,61 @@ function Resolve-UpdateCheckFileName {
     Write-Output $fileName
 }
 
+$body = @'
+{
+	"stable": {
+		"name": "",
+		"published_at": "",
+		"html_url": "",
+		"assets": {
+			"installer": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			},
+			"portable": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			}
+		}
+	},
+    "prerelease": {
+		"name": "",
+		"published_at": "",
+		"html_url": "",
+		"assets": {
+			"installer": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			},
+			"portable": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			}
+		}
+	},
+	"nightlybuild": {
+		"name": "",
+		"published_at": "",
+		"html_url": "",
+		"assets": {
+			"installer": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			},
+			"portable": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			}
+		}
+	}
+}
+'@
 
 
 Write-Output "Begin create_website_release_json_file.ps1"
@@ -93,8 +148,6 @@ Write-Output "Begin create_website_release_json_file.ps1"
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Nightly"
-    $pathToJson = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve -ErrorAction Ignore
-    $pathToNewJson = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releasesNEW.json" -Resolve -ErrorAction Ignore
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Preview)") {
     write-host "UpdateChannel = Preview"
     $UpdateChannel = "Preview"
@@ -107,42 +160,67 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
 
-
 if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
+
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
+    $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
+    $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyy.MM.dd"))-$TagName"
+    $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+    $change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+
+    # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
-        $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
-        $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
-        Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
-        #Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
-        #write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
+        $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
+        $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+        $checksum = (Get-FileHash $msiFile -Algorithm SHA512).Hash
+        $file_size = (Get-ChildItem $msiFile).Length
 
-        $a = Get-Content $pathToJson | ConvertFrom-Json
-        write-host $a.nightlybuild.name
+        $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
 
-        $i = Get-Content "$buildFolder\nightly-update.txt"
-        $p = Get-Content "$buildFolder\nightly-update-portable.txt"
+        switch ($UpdateChannel) {
+            "Nightly" {$b = $a.nightlybuild; break}
+            "Preview" {$b = $a.prerelease; break}
+            "Stable"  {$b = $a.stable; break}
+        }
 
-        $a.nightlybuild.name = $i[0].Replace("Version: ", "v")
-        $a.nightlybuild.published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-        $a.nightlybuild.html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$env:APPVEYOR_REPO_TAG_NAME" 
+        $b.name = "v$TagName"
+        $b.published_at = $published_at
+        $b.html_url = $html_url
+        $b.assets.installer.browser_download_url = $browser_download_url
+        $b.assets.installer.checksum = $checksum
+        $b.assets.installer.size = $file_size
+        $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
-        $a.nightlybuild.assets.installer.browser_download_url = $i[1].Replace("dURL: ", "")
-        $a.nightlybuild.assets.portable.browser_download_url = $i[4].Replace("Checksum: ", "")
-
-        #$a | ConvertTo-Json -Depth 10 | set-content $pathToNewJson
+        Get-Content $websiteJsonReleaseFile
     }
 
-    # build zip update file
-    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
+    # portable
     $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($zipFile)) {
-        $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $TagName
-        $zipUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Portable
-        Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
-        #Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
-        #write-host "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
+
+        $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
+        $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+        $checksum = (Get-FileHash $zipFile -Algorithm SHA512).Hash
+        $file_size = (Get-ChildItem $zipFile).Length
+        
+        switch ($UpdateChannel) {
+            "Nightly" {$b = $a.nightlybuild; break}
+            "Preview" {$b = $a.prerelease; break}
+            "Stable"  {$b = $a.stable; break}
+        }
+
+        $b.name = "v$TagName"
+        $b.published_at = $published_at
+        $b.html_url = $html_url
+        $b.assets.portable.browser_download_url = $browser_download_url
+        $b.assets.portable.checksum = $checksum
+        $b.assets.portable.size = $file_size
+        $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
+
+        Get-Content $websiteJsonReleaseFile
+
     }
 } else {
     write-host "BuildFolder not found"
