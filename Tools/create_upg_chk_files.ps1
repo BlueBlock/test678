@@ -142,6 +142,63 @@ Checksum: $hash"
 }
 
 
+$body = @'
+{
+	"stable": {
+		"name": "",
+		"published_at": "",
+		"html_url": "",
+		"assets": {
+			"installer": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			},
+			"portable": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			}
+		}
+	},
+    "prerelease": {
+		"name": "",
+		"published_at": "",
+		"html_url": "",
+		"assets": {
+			"installer": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			},
+			"portable": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			}
+		}
+	},
+	"nightlybuild": {
+		"name": "",
+		"published_at": "",
+		"html_url": "",
+		"assets": {
+			"installer": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			},
+			"portable": {
+				"browser_download_url": "",
+				"checksum": "",
+				"size": 
+			}
+		}
+	}
+}
+'@
+
+
 Write-Output "Begin create_upg_chk_files.ps1"
 
 # determine update channel
@@ -179,10 +236,10 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     if (![string]::IsNullOrEmpty($zipFile)) {
 
 
-        $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"
+        $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"        
         $pathToNewJson = "C:\projects\releasesNew.json"
         $a = Get-Content $pathToJson | ConvertFrom-Json
-        write-host $a.nightlybuild.name
+        $a = $body | ConvertFrom-Json
 
         $i = Get-Content "$buildFolder\nightly-update-portable.txt"
         $p = Get-Content "$buildFolder\nightly-update-portable.txt"
