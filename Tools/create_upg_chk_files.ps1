@@ -204,7 +204,6 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         # $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"        
         # $pathToNewJson = "C:\projects\releasesNew.json"
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
-        $a = $body | ConvertFrom-Json
 
         # $i = Get-Content "$buildFolder\nightly-update-portable.txt"
         # $p = Get-Content "$buildFolder\nightly-update-portable.txt"
