@@ -187,7 +187,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     if (![string]::IsNullOrEmpty($msiFile)) {
         $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
         $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
-        $hash = (Get-FileHash $msiFile -Algorithm SHA512).Hash
+        $checksum = (Get-FileHash $msiFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $msiFile).Length
         
     }
@@ -198,7 +198,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
         $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
         $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
-        $hash = (Get-FileHash $zipFile -Algorithm SHA512).Hash
+        $checksum = (Get-FileHash $zipFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $zipFile).Length
         
         # $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"        
@@ -211,9 +211,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         $a.nightlybuild.name = "v$TagName"
         $a.nightlybuild.published_at = $published_at
         $a.nightlybuild.html_url = $html_url
+        $a.nightlybuild.assets.portable.browser_download_url = $browser_download_url
+        $a.nightlybuild.assets.installer.checksum = $checksum
 
-        $a.nightlybuild.assets.installer.browser_download_url = $browser_download_url
-        $a.nightlybuild.assets.portable.browser_download_url = $hash
 
         $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
