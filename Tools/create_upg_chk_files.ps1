@@ -85,6 +85,63 @@ function Resolve-UpdateCheckFileName {
     Write-Output $fileName
 }
 
+# "name": "v1.76.20",
+# 		"published_at": "2019-04-12T14:10:45Z",
+# 		"html_url": "https://github.com/mRemoteNG/mRemoteNG/releases/tag/v1.76.20",
+# 		"assets": {
+# 			"installer": {
+# 				"browser_download_url": "https://github.com/mRemoteNG/mRemoteNG/releases/download/v1.76.20/mRemoteNG-Installer-1.76.20.24615.msi",
+# 				"checksum": "AE7406070F1B4C328C716356A6E1DE3CBA0EAEEAA8F0F490C82073BA511968CF97583D0136B38D69C15EA5C1EF0C41F74A974A7200D13099522867FF6B387338",
+# 				"size": 43593728
+
+function New-MsiUpdateFileContent2 {
+    param (
+        [System.IO.FileInfo]
+        [Parameter(Mandatory=$true)]
+        $MsiFile,
+
+        [string]
+        [Parameter(Mandatory=$true)]
+        $TagName
+    )
+    
+    $version = $MsiFile.BaseName -replace "[a-zA-Z-]*"
+    $certThumbprint = (Get-AuthenticodeSignature -FilePath $MsiFile).SignerCertificate.Thumbprint
+    $hash = Get-FileHash -Algorithm SHA512 $MsiFile | % { $_.Hash }
+
+    $fileContents = `
+"Version: $version
+dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$TagName/$($MsiFile.Name)
+clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$TagName/CHANGELOG.md
+CertificateThumbprint: $certThumbprint
+Checksum: $hash"
+    Write-Output $fileContents
+}
+
+
+function New-ZipUpdateFileContent2 {
+    param (
+        [System.IO.FileInfo]
+        [Parameter(Mandatory=$true)]
+        $ZipFile,
+
+        [string]
+        [Parameter(Mandatory=$true)]
+        $TagName
+    )
+    
+    $version = $ZipFile.BaseName -replace "[a-zA-Z-]*"
+    $hash = Get-FileHash -Algorithm SHA512 $ZipFile | % { $_.Hash }
+
+    $fileContents = `
+"Version: $version
+dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$TagName/$($ZipFile.Name)
+clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$TagName/CHANGELOG.TXT
+Checksum: $hash"
+    Write-Output $fileContents
+}
+
+
 Write-Output "Begin create_upg_chk_files.ps1"
 
 # determine update channel
@@ -107,17 +164,42 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
+        
+        $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"
+        $pathToNewJson = "C:\projects\mRemoteNG.github.io\_data\releasesNew.json"
+        $a = Get-Content $pathToJson | ConvertFrom-Json
+        write-host $a.nightlybuild.name
+
+        $i = Get-Content "$buildFolder\nightly-update.txt"
+        $p = Get-Content "$buildFolder\nightly-update-portable.txt"
+
+        $a.nightlybuild.name = $i[0].Replace("Version: ", "v")
+        $a.nightlybuild.published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+        $a.nightlybuild.html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$env:APPVEYOR_REPO_TAG_NAME" 
+
+        $a.nightlybuild.assets.installer.browser_download_url = $i[1].Replace("dURL: ", "")
+        $a.nightlybuild.assets.portable.browser_download_url = $i[4].Replace("Checksum: ", "")
+
+        $a | ConvertTo-Json -Depth 10 | set-content $pathToNewJson
+
+
+
+
+
+        $msiUpdateContents2 = New-MsiUpdateFileContent2 -MsiFile $msiFile -TagName $TagName
+        Tee-Object -InputObject $msiUpdateContents2 -FilePath "$releaseFolder\$msiUpdateFileName.json.txt"
         $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
         $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
         Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
-        write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
+        write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"        
     }
 
     # build zip update file
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($zipFile)) {
+        $zipUpdateContents2 = New-ZipUpdateFileContent2 -ZipFile $zipFile -TagName $TagName
         $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $TagName
         $zipUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Portable
         Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
