@@ -253,8 +253,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
         $a | ConvertTo-Json -Depth 10 | set-content $pathToNewJson
 
-        Get-Content $pathToJson
-        Get-Content $pathToNewJson
+        Get-Content $a
+        #Get-Content $pathToNewJson
 
 
         $zipUpdateContents2 = New-ZipUpdateFileContent2 -ZipFile $zipFile -TagName $TagName
