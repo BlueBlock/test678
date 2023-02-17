@@ -167,9 +167,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyy.MM.dd"))-$TagName"
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
-    $change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
-
-    Get-Content $websiteJsonReleaseFile
+    #$change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
 
     # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
@@ -215,17 +213,15 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
                 break
             }
             "Stable" {
-                $b.stable.name = "v$TagName"
-                $b.stable.published_at = $published_at
-                $b.stable.html_url = $html_url
-                $b.stable.assets.installer.browser_download_url = $browser_download_url
-                $b.stable.assets.installer.checksum = $checksum
-                $b.stable.assets.installer.size = $file_size
+                $a.stable.name = "v$TagName"
+                $a.stable.published_at = $published_at
+                $a.stable.html_url = $html_url
+                $a.stable.assets.installer.browser_download_url = $browser_download_url
+                $a.stable.assets.installer.checksum = $checksum
+                $a.stable.assets.installer.size = $file_size
                 break
             }
         }
-
-        Get-Content $websiteJsonReleaseFile
     }
 
     # portable
@@ -272,22 +268,21 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
                 break
             }
             "Stable" {
-                $b.stable.name = "v$TagName"
-                $b.stable.published_at = $published_at
-                $b.stable.html_url = $html_url
-                $b.stable.assets.portable.browser_download_url = $browser_download_url
-                $b.stable.assets.portable.checksum = $checksum
-                $b.stable.assets.portable.size = $file_size
+                $a.stable.name = "v$TagName"
+                $a.stable.published_at = $published_at
+                $a.stable.html_url = $html_url
+                $a.stable.assets.portable.browser_download_url = $browser_download_url
+                $a.stable.assets.portable.checksum = $checksum
+                $a.stable.assets.portable.size = $file_size
                 break
             }
         }
-
-
-        $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
-
-        Get-Content $websiteJsonReleaseFile
-
     }
+
+    $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
+
+    Get-Content $websiteJsonReleaseFile
+
 } else {
     write-host "BuildFolder not found"
 }
