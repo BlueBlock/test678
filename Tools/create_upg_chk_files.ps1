@@ -224,9 +224,9 @@ Write-Output "---------------"
 Write-Output $ProjectName
 Write-Output "v$TagName"
 Write-Output (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-Write-Output "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$env:APPVEYOR_REPO_TAG_NAME"
-Write-Output "dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$TagName/$($MsiFile.Name)"
-Write-Output "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$TagName/CHANGELOG.md"
+Write-Output "https://github.com/mRemoteNG/mRemoteNG/releases/tag/v$TagName"
+Write-Output "dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/v$TagName/$($msiFile.Name)"
+Write-Output "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/v$TagName/CHANGELOG.md"
 Write-Output "---------------"
 
 
