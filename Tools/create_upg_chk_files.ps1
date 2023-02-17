@@ -178,7 +178,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyy.MM.dd"))-$TagName"
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
-    $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+    $change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
     
     Write-Output "websiteJsonReleaseFile = $websiteJsonReleaseFile"
 
@@ -203,23 +203,23 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         
         # $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"        
         # $pathToNewJson = "C:\projects\releasesNew.json"
-        # $a = Get-Content $pathToJson | ConvertFrom-Json
-        # $a = $body | ConvertFrom-Json
+        $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
+        $a = $body | ConvertFrom-Json
 
         # $i = Get-Content "$buildFolder\nightly-update-portable.txt"
         # $p = Get-Content "$buildFolder\nightly-update-portable.txt"
 
-        # $a.nightlybuild.name = $i[0].Replace("Version: ", "v")
-        # $a.nightlybuild.published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-        # $a.nightlybuild.html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$env:APPVEYOR_REPO_TAG_NAME" 
+        $a.nightlybuild.name = "v$TagName"
+        $a.nightlybuild.published_at = $published_at
+        $a.nightlybuild.html_url = $html_url
 
-        # $a.nightlybuild.assets.installer.browser_download_url = $i[1].Replace("dURL: ", "")
-        # $a.nightlybuild.assets.portable.browser_download_url = $i[4].Replace("Checksum: ", "")
+        $a.nightlybuild.assets.installer.browser_download_url = $browser_download_url
+        $a.nightlybuild.assets.portable.browser_download_url = $hash
 
-        # $a | ConvertTo-Json -Depth 10 | set-content $pathToNewJson
+        $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
         # Get-Content $a
-        #Get-Content $pathToNewJson
+        Get-Content $websiteJsonReleaseFile
 
 
         $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $TagName
