@@ -201,12 +201,6 @@ $body = @'
 
 Write-Output "Begin create_upg_chk_files.ps1"
 
-Write-Output "---------------"
-Write-Output $TagName
-Write-Output $ProjectName
-Write-Output "---------------"
-
-
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
@@ -223,12 +217,24 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
 
+
+
+$msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
+Write-Output "---------------"
+Write-Output $ProjectName
+Write-Output "v$TagName"
+Write-Output (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+Write-Output "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$env:APPVEYOR_REPO_TAG_NAME"
+Write-Output "dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$TagName/$($MsiFile.Name)"
+Write-Output "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$TagName/CHANGELOG.md"
+Write-Output "---------------"
+
+
+
 if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
-        $msiUpdateContents2 = New-MsiUpdateFileContent2 -MsiFile $msiFile -TagName $TagName
-        Tee-Object -InputObject $msiUpdateContents2 -FilePath "$releaseFolder\$msiUpdateFileName.json.txt"
         $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
         $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
         Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
