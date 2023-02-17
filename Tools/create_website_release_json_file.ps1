@@ -169,6 +169,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
     $change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
 
+    Get-Content $websiteJsonReleaseFile
+
     # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
@@ -205,6 +207,19 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         $checksum = (Get-FileHash $zipFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $zipFile).Length
         
+        # switch ($UpdateChannel) {
+        #     "Nightly" {$b = $a.nightlybuild; break}
+        #     "Preview" {$b = $a.prerelease; break}
+        #     "Stable"  {$b = $a.stable; break}
+        # }
+
+        # $b.name = "v$TagName"
+        # $b.published_at = $published_at
+        # $b.html_url = $html_url
+        # $b.assets.portable.browser_download_url = $browser_download_url
+        # $b.assets.portable.checksum = $checksum
+        # $b.assets.portable.size = $file_size
+                
         switch ($UpdateChannel) {
             "Nightly" {
                 $b.nightlybuild.name = "v$TagName"
@@ -234,7 +249,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
                 break
             }
         }
-        
+
+
         $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
         Get-Content $websiteJsonReleaseFile
