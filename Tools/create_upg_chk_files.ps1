@@ -164,13 +164,27 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
-        
+        $msiUpdateContents2 = New-MsiUpdateFileContent2 -MsiFile $msiFile -TagName $TagName
+        Tee-Object -InputObject $msiUpdateContents2 -FilePath "$releaseFolder\$msiUpdateFileName.json.txt"
+        $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
+        $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
+        Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
+        Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
+        write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"        
+    }
+
+    # build zip update file
+    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
+    $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
+    if (![string]::IsNullOrEmpty($zipFile)) {
+
+
         $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"
-        $pathToNewJson = "C:\projects\mRemoteNG.github.io\_data\releasesNew.json"
+        $pathToNewJson = "C:\projects\releasesNew.json"
         $a = Get-Content $pathToJson | ConvertFrom-Json
         write-host $a.nightlybuild.name
 
-        $i = Get-Content "$buildFolder\nightly-update.txt"
+        $i = Get-Content "$buildFolder\nightly-update-portable.txt"
         $p = Get-Content "$buildFolder\nightly-update-portable.txt"
 
         $a.nightlybuild.name = $i[0].Replace("Version: ", "v")
@@ -185,20 +199,6 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
 
 
-
-        $msiUpdateContents2 = New-MsiUpdateFileContent2 -MsiFile $msiFile -TagName $TagName
-        Tee-Object -InputObject $msiUpdateContents2 -FilePath "$releaseFolder\$msiUpdateFileName.json.txt"
-        $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
-        $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
-        Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
-        Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
-        write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"        
-    }
-
-    # build zip update file
-    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
-    $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
-    if (![string]::IsNullOrEmpty($zipFile)) {
         $zipUpdateContents2 = New-ZipUpdateFileContent2 -ZipFile $zipFile -TagName $TagName
         $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $TagName
         $zipUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Portable
