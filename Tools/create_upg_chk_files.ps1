@@ -172,33 +172,34 @@ $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Re
 
 
 if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
+
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
+    $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
+    $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyy.MM.dd"))-$TagName"
+    $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+    $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+    
+    Write-Output "websiteJsonReleaseFile = $websiteJsonReleaseFile"
+
+    # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
-        $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
-        $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
-        Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
-        Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
-        write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"        
+        $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
+        $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+        $hash = (Get-FileHash $msiFile -Algorithm SHA512).Hash
+        $file_size = (Get-ChildItem $msiFile).Length
+        
     }
 
-    # build zip update file
-    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
+    # portable
     $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($zipFile)) {
-        $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyy.MM.dd"))-$TagName"
-        Write-Output "---------------"
-        Write-Output $ProjectName
-        Write-Output "v$TagName"
-        Write-Output (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-        Write-Output "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
-        Write-Output "dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
-        Write-Output "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
-        Write-Output (Get-FileHash $zipFile -Algorithm SHA512).Hash
-        Write-Output "file size:"
-        Write-Output (Get-ChildItem $zipFile).Length
-        Write-Output "---------------"
-#https://github.com/BlueBlock/mRemoteNG/releases/tag/2023.02.17-1.77.3.389
+
+        $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
+        $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+        $hash = (Get-FileHash $zipFile -Algorithm SHA512).Hash
+        $file_size = (Get-ChildItem $zipFile).Length
         
         # $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"        
         # $pathToNewJson = "C:\projects\releasesNew.json"
