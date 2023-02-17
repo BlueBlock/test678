@@ -237,6 +237,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         $checksum = (Get-FileHash $zipFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $zipFile).Length
         
+        $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
+
         # switch ($UpdateChannel) {
         #     "Nightly" {$b = $a.nightlybuild; break}
         #     "Preview" {$b = $a.prerelease; break}
