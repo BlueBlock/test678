@@ -181,19 +181,49 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
 
-        switch ($UpdateChannel) {
-            "Nightly" {$b = $a.nightlybuild; break}
-            "Preview" {$b = $a.prerelease; break}
-            "Stable"  {$b = $a.stable; break}
-        }
+        # switch ($UpdateChannel) {
+        #     "Nightly" {$b = $a.nightlybuild; break}
+        #     "Preview" {$b = $a.prerelease; break}
+        #     "Stable"  {$b = $a.stable; break}
+        # }
 
-        $b.name = "v$TagName"
-        $b.published_at = $published_at
-        $b.html_url = $html_url
-        $b.assets.installer.browser_download_url = $browser_download_url
-        $b.assets.installer.checksum = $checksum
-        $b.assets.installer.size = $file_size
-        $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
+        # $b.name = "v$TagName"
+        # $b.published_at = $published_at
+        # $b.html_url = $html_url
+        # $b.assets.installer.browser_download_url = $browser_download_url
+        # $b.assets.installer.checksum = $checksum
+        # $b.assets.installer.size = $file_size
+        # $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
+        
+        switch ($UpdateChannel) {
+            "Nightly" {
+                $a.nightlybuild.name = "v$TagName"
+                $a.nightlybuild.published_at = $published_at
+                $a.nightlybuild.html_url = $html_url
+                $a.nightlybuild.assets.installer.browser_download_url = $browser_download_url
+                $a.nightlybuild.assets.installer.checksum = $checksum
+                $a.nightlybuild.assets.installer.size = $file_size
+                break
+            }
+            "Preview" {
+                $a.prerelease.name = "v$TagName"
+                $a.prerelease.published_at = $published_at
+                $a.prerelease.html_url = $html_url
+                $a.prerelease.assets.installer.browser_download_url = $browser_download_url
+                $a.prerelease.assets.installer.checksum = $checksum
+                $a.prerelease.assets.installer.size = $file_size
+                break
+            }
+            "Stable" {
+                $b.stable.name = "v$TagName"
+                $b.stable.published_at = $published_at
+                $b.stable.html_url = $html_url
+                $b.stable.assets.installer.browser_download_url = $browser_download_url
+                $b.stable.assets.installer.checksum = $checksum
+                $b.stable.assets.installer.size = $file_size
+                break
+            }
+        }
 
         Get-Content $websiteJsonReleaseFile
     }
@@ -219,24 +249,24 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         # $b.assets.portable.browser_download_url = $browser_download_url
         # $b.assets.portable.checksum = $checksum
         # $b.assets.portable.size = $file_size
-                
+
         switch ($UpdateChannel) {
             "Nightly" {
-                $b.nightlybuild.name = "v$TagName"
-                $b.nightlybuild.published_at = $published_at
-                $b.nightlybuild.html_url = $html_url
-                $b.nightlybuild.assets.portable.browser_download_url = $browser_download_url
-                $b.nightlybuild.assets.portable.checksum = $checksum
-                $b.nightlybuild.assets.portable.size = $file_size
+                $a.nightlybuild.name = "v$TagName"
+                $a.nightlybuild.published_at = $published_at
+                $a.nightlybuild.html_url = $html_url
+                $a.nightlybuild.assets.portable.browser_download_url = $browser_download_url
+                $a.nightlybuild.assets.portable.checksum = $checksum
+                $a.nightlybuild.assets.portable.size = $file_size
                 break
             }
             "Preview" {
-                $b.prerelease.name = "v$TagName"
-                $b.prerelease.published_at = $published_at
-                $b.prerelease.html_url = $html_url
-                $b.prerelease.assets.portable.browser_download_url = $browser_download_url
-                $b.prerelease.assets.portable.checksum = $checksum
-                $b.prerelease.assets.portable.size = $file_size
+                $a.prerelease.name = "v$TagName"
+                $a.prerelease.published_at = $published_at
+                $a.prerelease.html_url = $html_url
+                $a.prerelease.assets.portable.browser_download_url = $browser_download_url
+                $a.prerelease.assets.portable.checksum = $checksum
+                $a.prerelease.assets.portable.size = $file_size
                 break
             }
             "Stable" {
