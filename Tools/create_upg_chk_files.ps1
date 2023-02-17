@@ -194,7 +194,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Write-Output "https://github.com/mRemoteNG/mRemoteNG/releases/tag/v$TagName"
         Write-Output "dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/v$TagName/$($zipFile.Name)"
         Write-Output "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/v$TagName/CHANGELOG.md"
-        Write-Output (Get-FileHash $zipFile -Algorithm SHA256).Hash
+        Write-Output (Get-FileHash $zipFile -Algorithm SHA512).Hash
         Write-Output "file size:"
         Write-Output (Get-ChildItem $zipFile).Length
         Write-Output "---------------"
