@@ -186,19 +186,19 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($zipFile)) {
-
+        $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyy.MM.dd"))-$TagName"
         Write-Output "---------------"
         Write-Output $ProjectName
         Write-Output "v$TagName"
         Write-Output (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-        Write-Output "https://github.com/mRemoteNG/mRemoteNG/releases/tag/v$TagName"
-        Write-Output "dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/v$TagName/$($zipFile.Name)"
-        Write-Output "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/v$TagName/CHANGELOG.md"
+        Write-Output "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+        Write-Output "dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
+        Write-Output "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
         Write-Output (Get-FileHash $zipFile -Algorithm SHA512).Hash
         Write-Output "file size:"
         Write-Output (Get-ChildItem $zipFile).Length
         Write-Output "---------------"
-
+#https://github.com/BlueBlock/mRemoteNG/releases/tag/2023.02.17-1.77.3.389
         
         # $pathToJson = "C:\projects\mRemoteNG.github.io\_data\releases.json"        
         # $pathToNewJson = "C:\projects\releasesNew.json"
