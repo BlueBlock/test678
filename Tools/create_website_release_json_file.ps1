@@ -10,138 +10,6 @@ param (
 )
 
 
-function New-MsiUpdateFileContent {
-    param (
-        [System.IO.FileInfo]
-        [Parameter(Mandatory=$true)]
-        $MsiFile,
-
-        [string]
-        [Parameter(Mandatory=$true)]
-        $TagName
-    )
-    
-    $version = $MsiFile.BaseName -replace "[a-zA-Z-]*"
-    $certThumbprint = (Get-AuthenticodeSignature -FilePath $MsiFile).SignerCertificate.Thumbprint
-    $hash = Get-FileHash -Algorithm SHA512 $MsiFile | % { $_.Hash }
-
-    $fileContents = `
-"Version: $version
-dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$TagName/$($MsiFile.Name)
-clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$TagName/CHANGELOG.md
-CertificateThumbprint: $certThumbprint
-Checksum: $hash"
-    Write-Output $fileContents
-}
-
-
-function New-ZipUpdateFileContent {
-    param (
-        [System.IO.FileInfo]
-        [Parameter(Mandatory=$true)]
-        $ZipFile,
-
-        [string]
-        [Parameter(Mandatory=$true)]
-        $TagName
-    )
-    
-    $version = $ZipFile.BaseName -replace "[a-zA-Z-]*"
-    $hash = Get-FileHash -Algorithm SHA512 $ZipFile | % { $_.Hash }
-
-    $fileContents = `
-"Version: $version
-dURL: https://github.com/mRemoteNG/mRemoteNG/releases/download/$TagName/$($ZipFile.Name)
-clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$TagName/CHANGELOG.TXT
-Checksum: $hash"
-    Write-Output $fileContents
-}
-
-
-function Resolve-UpdateCheckFileName {
-    param (
-        [string]
-        [Parameter(Mandatory=$true)]
-        [ValidateSet("Stable","Preview","Nightly")]
-        $UpdateChannel,
-
-        [string]
-        [Parameter(Mandatory=$true)]
-        [ValidateSet("Normal","Portable")]
-        $Type
-    )
-
-    $fileName = ""
-
-    if ($UpdateChannel -eq "Preview") { $fileName += "preview-" }
-    elseif ($UpdateChannel -eq "Nightly") { $fileName += "nightly-" }
-
-    $fileName += "update"
-
-    if ($Type -eq "Portable") { $fileName += "-portable" }
-
-    $fileName += ".txt"
-
-    Write-Output $fileName
-}
-
-$body = @'
-{
-	"stable": {
-		"name": "",
-		"published_at": "",
-		"html_url": "",
-		"assets": {
-			"installer": {
-				"browser_download_url": "",
-				"checksum": "",
-				"size": 
-			},
-			"portable": {
-				"browser_download_url": "",
-				"checksum": "",
-				"size": 
-			}
-		}
-	},
-    "prerelease": {
-		"name": "",
-		"published_at": "",
-		"html_url": "",
-		"assets": {
-			"installer": {
-				"browser_download_url": "",
-				"checksum": "",
-				"size": 
-			},
-			"portable": {
-				"browser_download_url": "",
-				"checksum": "",
-				"size": 
-			}
-		}
-	},
-	"nightlybuild": {
-		"name": "",
-		"published_at": "",
-		"html_url": "",
-		"assets": {
-			"installer": {
-				"browser_download_url": "",
-				"checksum": "",
-				"size": 
-			},
-			"portable": {
-				"browser_download_url": "",
-				"checksum": "",
-				"size": 
-			}
-		}
-	}
-}
-'@
-
-
 Write-Output "Begin create_website_release_json_file.ps1"
 
 # determine update channel
@@ -158,6 +26,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
+
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
 
 if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
@@ -173,26 +42,11 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
         $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
-        $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
         $checksum = (Get-FileHash $msiFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $msiFile).Length
 
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
 
-        # switch ($UpdateChannel) {
-        #     "Nightly" {$b = $a.nightlybuild; break}
-        #     "Preview" {$b = $a.prerelease; break}
-        #     "Stable"  {$b = $a.stable; break}
-        # }
-
-        # $b.name = "v$TagName"
-        # $b.published_at = $published_at
-        # $b.html_url = $html_url
-        # $b.assets.installer.browser_download_url = $browser_download_url
-        # $b.assets.installer.checksum = $checksum
-        # $b.assets.installer.size = $file_size
-        # $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
-        
         switch ($UpdateChannel) {
             "Nightly" {
                 $a.nightlybuild.name = "v$TagName"
@@ -229,24 +83,10 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     if (![string]::IsNullOrEmpty($zipFile)) {
 
         $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
-        $change_log = "clURL: https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
         $checksum = (Get-FileHash $zipFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $zipFile).Length
         
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
-
-        # switch ($UpdateChannel) {
-        #     "Nightly" {$b = $a.nightlybuild; break}
-        #     "Preview" {$b = $a.prerelease; break}
-        #     "Stable"  {$b = $a.stable; break}
-        # }
-
-        # $b.name = "v$TagName"
-        # $b.published_at = $published_at
-        # $b.html_url = $html_url
-        # $b.assets.portable.browser_download_url = $browser_download_url
-        # $b.assets.portable.checksum = $checksum
-        # $b.assets.portable.size = $file_size
 
         switch ($UpdateChannel) {
             "Nightly" {
@@ -280,8 +120,6 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     }
 
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
-
-    Get-Content $websiteJsonReleaseFile
 
 } else {
     write-host "BuildFolder not found"
