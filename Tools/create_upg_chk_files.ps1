@@ -256,6 +256,11 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Get-Content $a
         #Get-Content $pathToNewJson
 
+        Write-Output "---------------"
+        Write-Output $TagName
+        Write-Output $ProjectName
+        Write-Output "---------------"
+
 
         $zipUpdateContents2 = New-ZipUpdateFileContent2 -ZipFile $zipFile -TagName $TagName
         $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $TagName
