@@ -125,6 +125,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
+    Copy-Item -Path $websiteJsonReleaseFile -Destination $releaseFolder
+
 } else {
     write-host "BuildFolder not found"
 }
