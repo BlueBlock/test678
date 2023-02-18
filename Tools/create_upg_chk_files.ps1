@@ -1,8 +1,8 @@
 ﻿#Requires -Version 4.0
 param (
     [string]
-    [Parameter(Mandatory=$true)]
-    $PreTagName,
+    [Parameter(Mandatory=$false)]
+    $PreTagName = "",
 
     [string]
     [Parameter(Mandatory=$true)]
