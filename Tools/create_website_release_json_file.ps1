@@ -28,7 +28,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Stable)") {
     write-host "UpdateChannel = Stable"
     $UpdateChannel = "Stable"
-    $ModifiedTagName = "v$TagName"
+    $ModifiedTagName = "v" + $TagName.Split("-")[0]
 } else {
     $UpdateChannel = ""
 }
