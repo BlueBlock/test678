@@ -94,6 +94,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
         switch ($UpdateChannel) {
             "Nightly" {
+                $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
+                $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
                 $a.nightlybuild.name = "v$TagName"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
@@ -103,6 +105,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
                 break
             }
             "Preview" {
+                $GithubTag = "$TagName-PB"
+                $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
                 $a.prerelease.name = "v$TagName"
                 $a.prerelease.published_at = $published_at
                 $a.prerelease.html_url = $html_url
@@ -112,6 +116,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
                 break
             }
             "Stable" {
+                $GithubTag = "$TagName"
+                $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
                 $a.stable.name = "v$TagName"
                 $a.stable.published_at = $published_at
                 $a.stable.html_url = $html_url
@@ -125,7 +131,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
-    Copy-Item -Path $websiteJsonReleaseFile -Destination $releaseFolder
+    Copy-Item -Path $websiteJsonReleaseFile -Destination "$releaseFolder\$GithubTag.json"
 
 } else {
     write-host "BuildFolder not found"
