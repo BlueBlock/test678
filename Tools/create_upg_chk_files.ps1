@@ -47,7 +47,7 @@ function New-ZipUpdateFileContent {
     )
     
     $version = $ZipFile.BaseName -replace "[a-zA-Z-]*"
-    $hash = Get-FileHash -Algorithm SHA512 $ZipFile | % { $_.Hash }
+    $hash = Get-FileHash -Algorithm SHA512 $ZipFile | ForEach-Object { $_.Hash }
 
     $fileContents = `
 "Version: $version
@@ -91,12 +91,15 @@ Write-Output "Begin create_upg_chk_files.ps1"
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Nightly"
+    $ModifiedTagName = $TagName
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Preview)") {
     write-host "UpdateChannel = Preview"
     $UpdateChannel = "Preview"
+    $ModifiedTagName = "v$TagName"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Stable)") {
     write-host "UpdateChannel = Stable"
     $UpdateChannel = "Stable"
+    $ModifiedTagName = "v$TagName"
 } else {
     $UpdateChannel = ""
 }
@@ -107,7 +110,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
-        $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $TagName
+        $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $ModifiedTagName
         $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
         Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
@@ -118,7 +121,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($zipFile)) {
-        $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $TagName
+        $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $ModifiedTagName
         $zipUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Portable
         Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
