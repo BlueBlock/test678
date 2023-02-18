@@ -20,12 +20,15 @@ Write-Output "Begin create_website_release_json_file.ps1"
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Nightly"
+    $ModifiedTagName = "$PreTagName-$TagName-NB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Preview)") {
     write-host "UpdateChannel = Preview"
     $UpdateChannel = "Preview"
+    $ModifiedTagName = "v$TagName-PB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Stable)") {
     write-host "UpdateChannel = Stable"
     $UpdateChannel = "Stable"
+    $ModifiedTagName = "v$TagName"
 } else {
     $UpdateChannel = ""
 }
