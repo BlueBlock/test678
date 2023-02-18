@@ -38,17 +38,14 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
-        $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
         $checksum = (Get-FileHash $msiFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $msiFile).Length
-
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
-
         switch ($UpdateChannel) {
             "Nightly" {
                 $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
                 $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
-                #$change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
+                $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
                 $a.nightlybuild.name = "v$TagName"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
@@ -60,6 +57,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
             "Preview" {
                 $GithubTag = "$TagName-PB"
                 $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+                $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
                 $a.prerelease.name = "v$TagName"
                 $a.prerelease.published_at = $published_at
                 $a.prerelease.html_url = $html_url
@@ -71,6 +69,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
             "Stable" {
                 $GithubTag = "$TagName"
                 $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+                $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($msiFile.Name)"
                 $a.stable.name = "v$TagName"
                 $a.stable.published_at = $published_at
                 $a.stable.html_url = $html_url
@@ -82,20 +81,21 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         }
     }
 
+    # https://github.com/BlueBlock/mRemoteNG/releases/tag/20230218-1.77.3.405-NB
+    # https://github.com/mRemoteNG/mRemoteNG/releases/download//mRemoteNG-Installer-1.77.3.405.msi
+
+
     # portable
     $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($zipFile)) {
-
-        $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
         $checksum = (Get-FileHash $zipFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $zipFile).Length
-        
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
-
         switch ($UpdateChannel) {
             "Nightly" {
                 $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
                 $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+                $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
                 $a.nightlybuild.name = "v$TagName"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
@@ -107,6 +107,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
             "Preview" {
                 $GithubTag = "$TagName-PB"
                 $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+                $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
                 $a.prerelease.name = "v$TagName"
                 $a.prerelease.published_at = $published_at
                 $a.prerelease.html_url = $html_url
@@ -118,6 +119,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
             "Stable" {
                 $GithubTag = "$TagName"
                 $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+                $browser_download_url = "https://github.com/mRemoteNG/mRemoteNG/releases/download/$GithubTag/$($zipFile.Name)"
                 $a.stable.name = "v$TagName"
                 $a.stable.published_at = $published_at
                 $a.stable.html_url = $html_url
