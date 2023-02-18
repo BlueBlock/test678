@@ -2,6 +2,10 @@
 param (
     [string]
     [Parameter(Mandatory=$true)]
+    $PreTagName,
+
+    [string]
+    [Parameter(Mandatory=$true)]
     $TagName,
 
     [string]
@@ -87,15 +91,18 @@ function Resolve-UpdateCheckFileName {
 
 Write-Output "Begin create_upg_chk_files.ps1"
 
+#https://github.com/mRemoteNG/mRemoteNG/releases/download/1.77.3.419/mRemoteNG-Installer-1.77.3.419.msi
+#https://github.com/BlueBlock/mRemoteNG/releases/download/20230218-1.77.3.419-NB/mRemoteNG-Installer-1.77.3.419.msi
+
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Nightly"
-    $ModifiedTagName = $TagName
+    $ModifiedTagName = "$PreTagName-$TagName-NB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Preview)") {
     write-host "UpdateChannel = Preview"
     $UpdateChannel = "Preview"
-    $ModifiedTagName = "v$TagName"
+    $ModifiedTagName = "v$TagName-PB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Stable)") {
     write-host "UpdateChannel = Stable"
     $UpdateChannel = "Stable"

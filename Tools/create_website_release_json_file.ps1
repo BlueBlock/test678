@@ -2,6 +2,10 @@
 param (
     [string]
     [Parameter(Mandatory=$true)]
+    $PreTagName,
+
+    [string]
+    [Parameter(Mandatory=$true)]
     $TagName,
 
     [string]
