@@ -33,10 +33,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
-    $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyy.MM.dd"))-$TagName"
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-    $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
-    #$change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
 
     # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
@@ -49,6 +46,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
         switch ($UpdateChannel) {
             "Nightly" {
+                $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
+                $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
+                #$change_log = "https://raw.githubusercontent.com/mRemoteNG/mRemoteNG/$GithubTag/CHANGELOG.md"
                 $a.nightlybuild.name = "v$TagName"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
@@ -58,6 +58,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
                 break
             }
             "Preview" {
+                $GithubTag = "$TagName-PB"
+                $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
                 $a.prerelease.name = "v$TagName"
                 $a.prerelease.published_at = $published_at
                 $a.prerelease.html_url = $html_url
@@ -67,6 +69,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
                 break
             }
             "Stable" {
+                $GithubTag = "$TagName"
+                $html_url = "https://github.com/mRemoteNG/mRemoteNG/releases/tag/$GithubTag"
                 $a.stable.name = "v$TagName"
                 $a.stable.published_at = $published_at
                 $a.stable.html_url = $html_url
