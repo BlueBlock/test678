@@ -53,8 +53,8 @@ Format-Table -AutoSize -Wrap -InputObject @{
 # }
 ###
 
-$PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:auth_token"
 Install-Module -Name PowerShellForGitHub
+$PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:auth_token"
 
 & "$PSScriptRoot\set_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
 & "$PSScriptRoot\verify_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
