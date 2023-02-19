@@ -7,6 +7,7 @@ Install-Module -Name PowerShellForGitHub
 Set-GitHubConfiguration -DisableTelemetry
 $PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:ACCESS_TOKEN"
 #$CURRENT_GITHUB_USER = $(Get-GitHubUser -Current).UserName
+$CURRENT_GITHUB_USER = $env:APPVEYOR_REPO_NAME.Split("/")[0]
 
 
 Function ConvertFrom-Base64($base64) {
