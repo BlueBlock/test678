@@ -1,6 +1,14 @@
 ﻿#Requires -Version 4.0
 param (
     [string]
+    [Parameter(Mandatory=$true)]
+    $WebsiteTargetUserName,
+
+    [string]
+    [Parameter(Mandatory=$true)]
+    $WebsiteTargetRepository,
+
+    [string]
     [Parameter(Mandatory=$false)]
     $PreTagName = "",
 
@@ -125,7 +133,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         if ((Test-Path -Path "$releaseFolder\$msiUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteRepository))) {
             Write-Output "Publish $msiUpdateFileName to $WebsiteRepository"
             $update_file_content_string = Get-Content "$releaseFolder\$msiUpdateFileName" | Out-String
-            Set-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path $msiUpdateFileName -CommitMessage "Updating $msiUpdateFileName" -Content $update_file_content_string -BranchName main
+            Set-GitHubContent -OwnerName $WebsiteTargetUserName -RepositoryName $WebsiteTargetRepository -Path $msiUpdateFileName -CommitMessage "Updating $msiUpdateFileName" -Content $update_file_content_string -BranchName main
         }
     }
 
@@ -142,7 +150,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         if ((Test-Path -Path "$releaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteRepository))) {
             Write-Output "Publish $zipUpdateFileName to $WebsiteRepository"
             $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
-            Set-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path $zipUpdateFileName -CommitMessage "Updating $zipUpdateFileName" -Content $update_file_content_string -BranchName main
+            Set-GitHubContent -OwnerName $WebsiteTargetUserName -RepositoryName $WebsiteTargetRepository -Path $zipUpdateFileName -CommitMessage "Updating $zipUpdateFileName" -Content $update_file_content_string -BranchName main
         }
     }
 } else {
