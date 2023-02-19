@@ -97,7 +97,14 @@ function Resolve-UpdateCheckFileName {
     Write-Output $fileName
 }
 
+
 Write-Output "Begin create_upg_chk_files.ps1"
+
+if ($env:WEBSITE_UPDATE_ENABLED -ne "true") {
+    Write-Output "Website update disabled. WEBSITE_UPDATE_ENABLED == FALSE"
+    Write-Output "End create_upg_chk_files.ps1"
+    Exit
+}
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
