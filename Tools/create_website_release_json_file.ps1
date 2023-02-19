@@ -48,7 +48,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     #Set-Location $releaseFolder
     $releases_json = Get-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
-    $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json" -Resolve
+    $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
 
 
     # installer
