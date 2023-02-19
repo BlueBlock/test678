@@ -122,7 +122,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
         write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
         # commit msi update txt file
-        if (Test-Path -Path "$releaseFolder\$msiUpdateFileName" -and -not [string]::IsNullOrEmpty($WebsiteRepository)) {
+        if ((Test-Path -Path "$releaseFolder\$msiUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteRepository))) {
             Write-Output "Publish $msiUpdateFileName to $WebsiteRepository"
             $update_file_content_string = Get-Content "$releaseFolder\$msiUpdateFileName" | Out-String
             Set-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path $msiUpdateFileName -CommitMessage "Updating $msiUpdateFileName" -Content $update_file_content_string -BranchName main
@@ -139,7 +139,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
         write-host "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
         # commit zip update txt file
-        if (Test-Path -Path "$releaseFolder\$zipUpdateFileName" -and -not [string]::IsNullOrEmpty($WebsiteRepository)) {
+        if ((Test-Path -Path "$releaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteRepository))) {
             Write-Output "Publish $zipUpdateFileName to $WebsiteRepository"
             $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
             Set-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path $zipUpdateFileName -CommitMessage "Updating $zipUpdateFileName" -Content $update_file_content_string -BranchName main
