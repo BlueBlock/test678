@@ -33,7 +33,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
-Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README4.md -CommitMessage 'Adding README.md' -Content '# README' -BranchName main
+Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README4.md -CommitMessage 'Adding README.md' -Content '# README 4' -BranchName main
 
 
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
