@@ -79,3 +79,11 @@ $msiUpload = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath 
 $portableEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngPortableSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Portable Edition Debug Symbols"
 $normalEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngNormalSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Normal Edition Debug Symbols"
 Write-Output (Get-GitHubRelease -Owner $Owner -Repository $Repository -ReleaseId $release.id -AuthToken $AuthToken)
+
+# commit releases.json change
+Write-Output "publish releases.json"
+if (Test-Path -Path "$ReleaseFolderPath\releases.json") {
+    $releases_json_string = Get-Content "$ReleaseFolderPath\releases.json" | Out-String
+    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
+}
+

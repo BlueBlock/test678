@@ -148,9 +148,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
-    #Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README5.md -CommitMessage 'Adding README.md' -Content "# README ProjectName=$ProjectName" -BranchName main
-    $releases_json_string = Get-Content $websiteJsonReleaseFile | Out-String
-    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
+    # # commit releases.json change
+    # $releases_json_string = Get-Content $websiteJsonReleaseFile | Out-String
+    # Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
 
 } else {
     write-host "BuildFolder not found"
