@@ -44,7 +44,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
-    #Set-Location $releaseFolder
+    # get releases.json from github
     $releases_json = Get-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
@@ -149,9 +149,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
     #Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README5.md -CommitMessage 'Adding README.md' -Content "# README ProjectName=$ProjectName" -BranchName main
-    $releases_json = Get-Content $websiteJsonReleaseFile
-    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path releases.json -CommitMessage 'Updating releases.json' -Content $releases_json -BranchName main
-    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json -BranchName main
+    $releases_json_string = Get-Content $websiteJsonReleaseFile | Out-String
+    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
 
 } else {
     write-host "BuildFolder not found"
