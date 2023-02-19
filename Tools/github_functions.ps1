@@ -6,6 +6,9 @@ $githubUrl = 'https://api.github.com'
 Install-Module -Name PowerShellForGitHub
 Set-GitHubConfiguration -DisableTelemetry
 $PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:access_token"
+$CURRENT_GITHUB_USER = Get-GitHubUser -Current
+
+
 
 Function ConvertFrom-Base64($base64) {
     return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64))
