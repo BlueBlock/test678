@@ -148,9 +148,12 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
-    # # commit releases.json change
-    # $releases_json_string = Get-Content $websiteJsonReleaseFile | Out-String
-    # Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
+    # commit releases.json change
+    Write-Output "publish releases.json"
+    if (Test-Path -Path "$ReleaseFolderPath\releases.json") {
+        $releases_json_string = Get-Content "$ReleaseFolderPath\releases.json" | Out-String
+        Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
+    }
 
 } else {
     write-host "BuildFolder not found"
