@@ -18,11 +18,6 @@ Write-Output "Begin create_website_release_json_file.ps1"
 
 . "$PSScriptRoot\github_functions.ps1"
 
-Install-Module -Name PowerShellForGitHub
-Set-GitHubConfiguration -DisableTelemetry
-$PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:access_token"
-
-
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
@@ -153,9 +148,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
-    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README5.md -CommitMessage 'Adding README.md' -Content "# README ProjectName=$ProjectName" -BranchName main
-    Get-Content $websiteJsonReleaseFile
-    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content Get-Content $websiteJsonReleaseFile -BranchName main
+    #Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README5.md -CommitMessage 'Adding README.md' -Content "# README ProjectName=$ProjectName" -BranchName main
+    $releases_json = Get-Content $websiteJsonReleaseFile
+    Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json -BranchName main
 
 } else {
     write-host "BuildFolder not found"
