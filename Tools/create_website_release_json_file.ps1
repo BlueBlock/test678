@@ -42,8 +42,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     #$websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
+    Set-Location $releaseFolder
     Get-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json
-    $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "\releases.json" -Resolve
+    $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json" -Resolve
 
 
     # installer
