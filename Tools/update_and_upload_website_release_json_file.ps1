@@ -24,6 +24,10 @@ param (
 
 Write-Output "Begin create_website_release_json_file.ps1"
 
+if ($env:WEBSITE_UPDATE_ENABLED -ne "true") {
+    Write-Output "Website update disabled. WEBSITE_UPDATE_ENABLED == FALSE"
+} else {
+
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
@@ -162,6 +166,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
 } else {
     write-host "BuildFolder not found"
+}
+
 }
 
 Write-Output "End create_website_release_json_file.ps1"
