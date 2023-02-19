@@ -38,6 +38,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
 }
 
 Install-Module -Name PowerShellForGitHub
+Set-GitHubConfiguration -DisableTelemetry
 $PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:auth_token"
 
 & "$PSScriptRoot\sign_binaries.ps1" -TargetDir $TargetDir -CertificatePath $CertificatePath -CertificatePassword $CertificatePassword -ConfigurationName $ConfigurationName -Exclude $ExcludeFromSigning -SolutionDir $SolutionDir
