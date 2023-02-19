@@ -35,7 +35,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 
 Install-Module -Name PowerShellForGitHub
 Set-GitHubConfiguration -DisableTelemetry
-$PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:auth_token"
+$PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:access_token"
 Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README3.md -CommitMessage 'Adding README.md' -Content '# README' -BranchName main
 
 
