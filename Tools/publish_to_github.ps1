@@ -64,7 +64,6 @@ if ($DescriptionIsBase64Encoded) {
 
 . "$PSScriptRoot\github_functions.ps1"
 
-
 $releaseFolderItems = Get-ChildItem -Path $ReleaseFolderPath
 $mrngPortablePath = ($releaseFolderItems | ?{$_.Name -match "portable-[\d\.]+\.zip"}).FullName
 $mrngNormalPath = ($releaseFolderItems | ?{$_.Name -match "installer-[\d\.]+\.msi"}).FullName
@@ -77,4 +76,8 @@ $msiUpload = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath 
 
 $portableEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngPortableSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Portable Edition Debug Symbols"
 $normalEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngNormalSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Normal Edition Debug Symbols"
+
+Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README4.md -CommitMessage 'Adding README.md' -Content "# README $ReleaseTitle" -BranchName main
+
+
 Write-Output (Get-GitHubRelease -Owner $Owner -Repository $Repository -ReleaseId $release.id -AuthToken $AuthToken)
