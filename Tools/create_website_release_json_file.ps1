@@ -18,6 +18,10 @@ Write-Output "Begin create_website_release_json_file.ps1"
 
 . "$PSScriptRoot\github_functions.ps1"
 
+Install-Module -Name PowerShellForGitHub
+Set-GitHubConfiguration -DisableTelemetry
+$PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:access_token"
+
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
