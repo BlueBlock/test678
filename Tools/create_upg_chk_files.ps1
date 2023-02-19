@@ -133,7 +133,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         if ((Test-Path -Path "$releaseFolder\$msiUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
             Write-Output "Publish $msiUpdateFileName to $WebsiteTargetRepository"
             $update_file_content_string = Get-Content "$releaseFolder\$msiUpdateFileName" | Out-String
-            Set-GitHubContent -OwnerName $WebsiteTargetUserName -RepositoryName $WebsiteTargetRepository -Path $msiUpdateFileName -CommitMessage "Updating $msiUpdateFileName" -Content $update_file_content_string -BranchName main
+            Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $msiUpdateFileName -CommitMessage "Updating $msiUpdateFileName" -Content $update_file_content_string -BranchName main
         }
     }
 
