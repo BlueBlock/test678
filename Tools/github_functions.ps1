@@ -6,7 +6,11 @@ $githubUrl = 'https://api.github.com'
 Install-Module -Name PowerShellForGitHub
 Set-GitHubConfiguration -DisableTelemetry
 $PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:ACCESS_TOKEN"
-$env:CURRENT_GITHUB_USER = Get-GitHubUser -Current
+$CURRENT_GITHUB_USER = $(Get-GitHubUser -Current).UserName
+
+#Write-Output "Get-GitHubUser -Current"
+#Get-GitHubUser -Current
+Write-Output "CURRENT_GITHUB_USER = $CURRENT_GITHUB_USER"
 
 
 
