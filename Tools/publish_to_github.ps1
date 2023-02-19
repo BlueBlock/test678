@@ -64,11 +64,13 @@ if ($DescriptionIsBase64Encoded) {
 
 . "$PSScriptRoot\github_functions.ps1"
 
+
 $releaseFolderItems = Get-ChildItem -Path $ReleaseFolderPath
 $mrngPortablePath = ($releaseFolderItems | ?{$_.Name -match "portable-[\d\.]+\.zip"}).FullName
 $mrngNormalPath = ($releaseFolderItems | ?{$_.Name -match "installer-[\d\.]+\.msi"}).FullName
 $mrngPortableSymbolsPath = ($releaseFolderItems | ?{$_.Name -match "mremoteng-portable-symbols-[\d\.]+\.zip"}).FullName
 $mrngNormalSymbolsPath = ($releaseFolderItems | ?{$_.Name -match "mremoteng-symbols-[\d\.]+\.zip"}).FullName
+
 
 $release = Publish-GitHubRelease -Owner $Owner -Repository $Repository -ReleaseTitle $ReleaseTitle -TagName $TagName -TargetCommitish $TargetCommitish -Description $Description -IsDraft ([bool]::Parse($IsDraft)) -IsPrerelease ([bool]::Parse($IsPrerelease)) -AuthToken $AuthToken
 $zipUpload = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngPortablePath -ContentType "application/zip" -AuthToken $AuthToken -Label "Portable Edition (zip)"
@@ -76,14 +78,4 @@ $msiUpload = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath 
 
 $portableEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngPortableSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Portable Edition Debug Symbols"
 $normalEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngNormalSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Normal Edition Debug Symbols"
-
-
-Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README5.md -CommitMessage 'Adding README.md' -Content "# README ReleaseTitle=$ReleaseTitle" -BranchName main
-
-Get-Content $ReleaseFolderPath\releases.json
-
-Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content Get-Content $ReleaseFolderPath\releases.json -BranchName main
-
-
-
 Write-Output (Get-GitHubRelease -Owner $Owner -Repository $Repository -ReleaseId $release.id -AuthToken $AuthToken)
