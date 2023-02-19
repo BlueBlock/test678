@@ -48,16 +48,14 @@ $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Re
 if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
-
-    $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-
+    
+    #$websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
 
     # get releases.json from github
     $releases_json = Get-GitHubContent -OwnerName $WebsiteTargetUserName -RepositoryName $WebsiteTargetRepository -Path _data\releases.json
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
-
 
     # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
