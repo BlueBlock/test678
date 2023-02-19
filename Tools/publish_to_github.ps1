@@ -71,6 +71,7 @@ $mrngNormalPath = ($releaseFolderItems | ?{$_.Name -match "installer-[\d\.]+\.ms
 $mrngPortableSymbolsPath = ($releaseFolderItems | ?{$_.Name -match "mremoteng-portable-symbols-[\d\.]+\.zip"}).FullName
 $mrngNormalSymbolsPath = ($releaseFolderItems | ?{$_.Name -match "mremoteng-symbols-[\d\.]+\.zip"}).FullName
 
+Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README2.md -CommitMessage 'Adding README.md' -Content '# README' -BranchName main
 
 $release = Publish-GitHubRelease -Owner $Owner -Repository $Repository -ReleaseTitle $ReleaseTitle -TagName $TagName -TargetCommitish $TargetCommitish -Description $Description -IsDraft ([bool]::Parse($IsDraft)) -IsPrerelease ([bool]::Parse($IsPrerelease)) -AuthToken $AuthToken
 $zipUpload = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngPortablePath -ContentType "application/zip" -AuthToken $AuthToken -Label "Portable Edition (zip)"
