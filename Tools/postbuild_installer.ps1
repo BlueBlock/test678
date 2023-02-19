@@ -37,6 +37,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
     "ExcludeFromSigning" = $ExcludeFromSigning
 }
 
+$PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:auth_token"
 Install-Module -Name PowerShellForGitHub
 
 & "$PSScriptRoot\sign_binaries.ps1" -TargetDir $TargetDir -CertificatePath $CertificatePath -CertificatePassword $CertificatePassword -ConfigurationName $ConfigurationName -Exclude $ExcludeFromSigning -SolutionDir $SolutionDir
