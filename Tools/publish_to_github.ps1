@@ -77,7 +77,8 @@ $msiUpload = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath 
 $portableEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngPortableSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Portable Edition Debug Symbols"
 $normalEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url -FilePath $mrngNormalSymbolsPath -ContentType "application/zip" -AuthToken $AuthToken -Label "Normal Edition Debug Symbols"
 
-Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README4.md -CommitMessage 'Adding README.md' -Content "# README ReleaseTitle=$ReleaseTitle" -BranchName main
+
+Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README5.md -CommitMessage 'Adding README.md' -Content "# README ReleaseTitle=$ReleaseTitle" -BranchName main
 
 
 
