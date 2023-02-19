@@ -38,8 +38,13 @@ $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Re
 if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
-    $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
+
+    #$websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+    Get-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json
+    $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "\releases.json" -Resolve
+
 
     # installer
     $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
