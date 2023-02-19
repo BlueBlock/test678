@@ -25,6 +25,8 @@ param (
     $ExcludeFromSigning
 )
 
+. "$PSScriptRoot\github_functions.ps1"
+
 Write-Output "+===========================================================================================+"
 Write-Output "|                               Beginning mRemoteNG Post Build                              |"
 Write-Output "+===========================================================================================+"

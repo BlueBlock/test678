@@ -99,8 +99,6 @@ function Resolve-UpdateCheckFileName {
 
 Write-Output "Begin create_upg_chk_files.ps1"
 
-. "$PSScriptRoot\github_functions.ps1"
-
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
