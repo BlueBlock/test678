@@ -2,7 +2,7 @@
 param (
     [string]
     [Parameter(Mandatory=$true)]
-    $WebsiteTargetUserName,
+    $WebsiteTargetOwner,
 
     [string]
     [Parameter(Mandatory=$true)]

@@ -2,7 +2,7 @@
 param (
     [string]
     [Parameter(Mandatory=$true)]
-    $WebsiteTargetUserName,
+    $WebsiteTargetOwner,
 
     [string]
     [Parameter(Mandatory=$true)]
@@ -150,7 +150,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         if ((Test-Path -Path "$releaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteRepository))) {
             Write-Output "Publish $zipUpdateFileName to $WebsiteRepository"
             $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
-            Set-GitHubContent -OwnerName $WebsiteTargetUserName -RepositoryName $WebsiteTargetRepository -Path $zipUpdateFileName -CommitMessage "Updating $zipUpdateFileName" -Content $update_file_content_string -BranchName main
+            Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $zipUpdateFileName -CommitMessage "Updating $zipUpdateFileName" -Content $update_file_content_string -BranchName main
         }
     }
 } else {
