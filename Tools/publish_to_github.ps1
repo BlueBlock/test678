@@ -80,6 +80,8 @@ $normalEditionSymbols = Upload-GitHubReleaseAsset -UploadUri $release.upload_url
 
 Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path README5.md -CommitMessage 'Adding README.md' -Content "# README ReleaseTitle=$ReleaseTitle" -BranchName main
 
+Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io  -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content Get-Content $ReleaseFolderPath\releases.json -BranchName main
+
 
 
 Write-Output (Get-GitHubRelease -Owner $Owner -Repository $Repository -ReleaseId $release.id -AuthToken $AuthToken)

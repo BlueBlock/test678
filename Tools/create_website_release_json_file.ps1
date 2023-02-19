@@ -43,8 +43,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
     #Set-Location $releaseFolder
-    #Get-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json
-    #$websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json" -Resolve
+    $releases_json = Get-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json
+    ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
+    $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json" -Resolve
 
 
     # installer
