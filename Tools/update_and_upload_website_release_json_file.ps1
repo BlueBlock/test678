@@ -54,7 +54,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
 
     # get releases.json from github
-    $releases_json = Get-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path _data\releases.json
+    $releases_json = Get-GitHubContent -OwnerName $env:CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path _data\releases.json
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
 
@@ -161,7 +161,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     Write-Output "publish releases.json"
     if (Test-Path -Path "$releaseFolder\releases.json") {
         $releases_json_string = Get-Content "$releaseFolder\releases.json" | Out-String
-        Set-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
+        Set-GitHubContent -OwnerName $env:CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
     }
 
 } else {
