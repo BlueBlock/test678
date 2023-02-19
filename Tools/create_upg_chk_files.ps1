@@ -35,7 +35,7 @@ function New-MsiUpdateFileContent {
     
     $version = $MsiFile.BaseName -replace "[a-zA-Z-]*"
     $certThumbprint = (Get-AuthenticodeSignature -FilePath $MsiFile).SignerCertificate.Thumbprint
-    $hash = Get-FileHash -Algorithm SHA512 $MsiFile | % { $_.Hash }
+    $hash = Get-FileHash -Algorithm SHA512 $MsiFile | ForEach-Object { $_.Hash }
 
     $fileContents = `
 "Version: $version
@@ -147,7 +147,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
         write-host "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
         # commit zip update txt file
-        if ((Test-Path -Path "$releaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteRepository))) {
+        if ((Test-Path -Path "$releaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
             Write-Output "Publish $zipUpdateFileName to $WebsiteRepository"
             $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
             Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $zipUpdateFileName -CommitMessage "Updating $zipUpdateFileName" -Content $update_file_content_string -BranchName main
