@@ -1,6 +1,14 @@
 ﻿#Requires -Version 4.0
 param (
     [string]
+    [Parameter(Mandatory=$true)]
+    $WebsiteOwner,
+
+    [string]
+    [Parameter(Mandatory=$true)]
+    $WebsiteRepository,
+
+    [string]
     [Parameter(Mandatory=$false)]
     $PreTagName = "",
 
@@ -44,8 +52,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
+
     # get releases.json from github
-    $releases_json = Get-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json
+    $releases_json = Get-GitHubContent -OwnerName $WebsiteOwner -RepositoryName $WebsiteRepository -Path _data\releases.json
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
 
@@ -150,9 +159,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 
     # commit releases.json change
     Write-Output "publish releases.json"
-    if (Test-Path -Path "$ReleaseFolderPath\releases.json") {
-        $releases_json_string = Get-Content "$ReleaseFolderPath\releases.json" | Out-String
-        Set-GitHubContent -OwnerName blueblock -RepositoryName mRemoteNG.github.io -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
+    if (Test-Path -Path "$releaseFolder\releases.json") {
+        $releases_json_string = Get-Content "$releaseFolder\releases.json" | Out-String
+        Set-GitHubContent -OwnerName $WebsiteOwner -RepositoryName $WebsiteRepository -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
     }
 
 } else {
