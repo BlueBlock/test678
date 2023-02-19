@@ -91,6 +91,8 @@ function Resolve-UpdateCheckFileName {
 
 Write-Output "Begin create_upg_chk_files.ps1"
 
+. "$PSScriptRoot\github_functions.ps1"
+
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
@@ -119,6 +121,12 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
         write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
+        # commit msi update txt file
+        if (Test-Path -Path "$releaseFolder\$msiUpdateFileName" && -not [string]::IsNullOrEmpty($WebsiteRepository)) {
+            Write-Output "Publish $msiUpdateFileName to $WebsiteRepository"
+            $update_file_content_string = Get-Content "$releaseFolder\$msiUpdateFileName" | Out-String
+            Set-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path $msiUpdateFileName -CommitMessage "Updating $msiUpdateFileName" -Content $update_file_content_string -BranchName main
+        }
     }
 
     # build zip update file
@@ -130,6 +138,12 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
         write-host "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
+        # commit zip update txt file
+        if (Test-Path -Path "$releaseFolder\$zipUpdateFileName" && -not [string]::IsNullOrEmpty($WebsiteRepository)) {
+            Write-Output "Publish $zipUpdateFileName to $WebsiteRepository"
+            $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
+            Set-GitHubContent -OwnerName $CURRENT_GITHUB_USER -RepositoryName $WebsiteRepository -Path $zipUpdateFileName -CommitMessage "Updating $zipUpdateFileName" -Content $update_file_content_string -BranchName main
+        }
     }
 } else {
     write-host "BuildFolder not found"
