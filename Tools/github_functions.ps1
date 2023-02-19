@@ -8,11 +8,6 @@ Set-GitHubConfiguration -DisableTelemetry
 $PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:ACCESS_TOKEN"
 $CURRENT_GITHUB_USER = $(Get-GitHubUser -Current).UserName
 
-#Write-Output "Get-GitHubUser -Current"
-#Get-GitHubUser -Current
-Write-Output "CURRENT_GITHUB_USER = $CURRENT_GITHUB_USER"
-
-
 
 Function ConvertFrom-Base64($base64) {
     return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64))
