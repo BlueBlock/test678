@@ -53,6 +53,8 @@ Format-Table -AutoSize -Wrap -InputObject @{
 # }
 ###
 
+Install-Module -Name PowerShellForGitHub
+
 & "$PSScriptRoot\set_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
 & "$PSScriptRoot\verify_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
 & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
