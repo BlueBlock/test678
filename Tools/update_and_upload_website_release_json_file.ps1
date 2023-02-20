@@ -29,12 +29,15 @@ Write-Output "Begin create_website_release_json_file.ps1"
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     write-host "UpdateChannel = Nightly"
     $UpdateChannel = "Nightly"
+    $ModifiedTagName = "$PreTagName-$TagName-NB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Preview)") {
     write-host "UpdateChannel = Preview"
     $UpdateChannel = "Preview"
+    $ModifiedTagName = "v$TagName-PB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Stable)") {
     write-host "UpdateChannel = Stable"
     $UpdateChannel = "Stable"
+    $ModifiedTagName = "v" + $TagName.Split("-")[0]
 } else {
     $UpdateChannel = ""
 }
@@ -153,7 +156,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Write-Output "publish releases.json"
         if (Test-Path -Path "$releaseFolder\releases.json") {
             $releases_json_string = Get-Content "$releaseFolder\releases.json" | Out-String
-            Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json -CommitMessage "Updated for $UpdateChannel $TagName" -Content $releases_json_string -BranchName main
+            Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json -CommitMessage "Updated for $UpdateChannel $ModifiedTagName" -Content $releases_json_string -BranchName main
         }
     }
 
