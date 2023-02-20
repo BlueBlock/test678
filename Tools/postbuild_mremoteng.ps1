@@ -27,6 +27,8 @@ param (
 
 . "$PSScriptRoot\github_functions.ps1"
 
+Write-Output "WEBSITE_UPDATE_ENABLED = $env:WEBSITE_UPDATE_ENABLED"
+
 Write-Output "+===========================================================================================+"
 Write-Output "|                               Beginning mRemoteNG Post Build                              |"
 Write-Output "+===========================================================================================+"
