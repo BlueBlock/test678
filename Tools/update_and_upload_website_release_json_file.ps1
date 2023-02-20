@@ -153,7 +153,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
         Write-Output "publish releases.json"
         if (Test-Path -Path "$releaseFolder\releases.json") {
             $releases_json_string = Get-Content "$releaseFolder\releases.json" | Out-String
-            Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json -CommitMessage 'Updating releases.json' -Content $releases_json_string -BranchName main
+            Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json -CommitMessage 'Updated for $UpdateChannel $TagName' -Content $releases_json_string -BranchName main
         }
     }
 
