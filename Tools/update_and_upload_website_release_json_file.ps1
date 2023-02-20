@@ -152,7 +152,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     $a | ConvertTo-Json -Depth 10 | set-content $websiteJsonReleaseFile
 
     # commit releases.json change
-    if ($env:WEBSITE_UPDATE_ENABLED -eq "true") {
+    if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
         Write-Output "publish releases.json"
         if (Test-Path -Path "$releaseFolder\releases.json") {
             $releases_json_string = Get-Content "$releaseFolder\releases.json" | Out-String
