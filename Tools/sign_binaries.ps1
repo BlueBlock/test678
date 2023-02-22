@@ -34,6 +34,8 @@ Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.github
 
 .\secure-file.exe
 
+Write-Output $CertificatePath
+
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
 
