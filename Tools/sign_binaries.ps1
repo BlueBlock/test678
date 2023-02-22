@@ -29,10 +29,7 @@ Write-Output "===== Beginning $($PSCmdlet.MyInvocation.MyCommand) ====="
 Write-Output $SolutionDir
 Write-Output $CertificatePath
 
-#Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"; Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-
-.\secure-file.exe
+$current_path = Get-Location; Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"; Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1')); Set-Location $current_path;
 
 Write-Output $CertificatePath
 
