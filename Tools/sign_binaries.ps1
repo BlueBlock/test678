@@ -29,9 +29,11 @@ Write-Output "===== Beginning $($PSCmdlet.MyInvocation.MyCommand) ====="
 Write-Output $SolutionDir
 Write-Output $CertificatePath
 
+Write-Output "aaa: 0"
+
 $current_path = Get-Location; Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"; Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1')); Set-Location $current_path;
 
-Write-Output "0"
+Write-Output "aaa: 0a"
 
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
