@@ -37,7 +37,10 @@ if ($ConfigurationName -match "Release" -And ("$($Env:CERT_PATH).enc")) {
 		Write-Output "3"
 		Write-Output $Env:APPVEYOR_BUILD_FOLDER
 		Write-Output "Decrypting cert.."
-		Start-Process -Wait -FilePath "$Env:APPVEYOR_BUILD_FOLDER\..\appveyor-tools\secure-file.exe" -ArgumentList "-decrypt '$($Env:CERT_PATH).enc' -secret '$Env:CERT_DECRYPT_PWD' "
+		Write-Output "$Env:APPVEYOR_BUILD_FOLDER\..\appveyor-tools\secure-file.exe"
+		Write-Output "$($Env:CERT_PATH).enc"
+		Write-Output "$Env:CERT_DECRYPT_PWD"
+		"$Env:APPVEYOR_BUILD_FOLDER\..\appveyor-tools\secure-file.exe -decrypt '$($Env:CERT_PATH).enc' -secret '$Env:CERT_DECRYPT_PWD' "
 		#$Env:APPVEYOR_BUILD_FOLDER\..\appveyor-tools\secure-file.exe -decrypt "$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
 		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
 	}
