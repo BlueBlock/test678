@@ -36,6 +36,8 @@ $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
 
 	if(-Not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {
+		Write-Output "Decrypting cert.."
+		appveyor-tools\secure-file -decrypt "$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
 		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
 	}
 
@@ -79,7 +81,7 @@ if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
 
 
 	# Release certificate
-	if ($cert -ne $null) {
+	if ($null -ne $cert) {
 	    $cert.Dispose()
 	}
 } else {
