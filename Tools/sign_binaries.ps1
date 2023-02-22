@@ -31,9 +31,12 @@ Write-Output $CertificatePath
 
 $current_path = Get-Location; Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"; Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1')); Set-Location $current_path;
 
+Write-Output "0"
+
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
 Write-Output "1"
+
 #  validate release versions and if the certificate value was passed
 if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
 	Write-Output "2"
