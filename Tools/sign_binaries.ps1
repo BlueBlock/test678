@@ -31,15 +31,15 @@ Write-Output $CertificatePath
 
 Write-Output "aaa: 0"
 
-$current_path = Get-Location
-Write-Output "aaa: 0a"
-Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"
-Write-Output "aaa: 0b"
-#Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-Invoke-WebRequest "https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1" | Invoke-Expression
-Write-Output "aaa: 0c"
-Set-Location $current_path
-Write-Output "aaa: 0d"
+# $current_path = Get-Location
+# Write-Output "aaa: 0a"
+# Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"
+# Write-Output "aaa: 0b"
+# #Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+# #Invoke-WebRequest "https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1" | Invoke-Expression
+# Write-Output "aaa: 0c"
+# Set-Location $current_path
+# Write-Output "aaa: 0d"
 
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
