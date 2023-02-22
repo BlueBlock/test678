@@ -45,19 +45,10 @@ Write-Output "1"
 if ($ConfigurationName -match "Release" -And ("$($Env:CERT_PATH).enc")) {
 	Write-Output "2"
 	if(-Not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {
-		Write-Output "3"
+		$current_path = Get-Location
 		$secure_file_tool = Join-Path -Path $Env:APPVEYOR_BUILD_FOLDER -ChildPath "..\appveyor-tools\secure-file.exe" -Resolve
-		Write-Output "secure_file_tool"
-		Write-Output $secure_file_tool
 		Write-Output "Decrypting cert.."
-		Write-Output "......"
-		Set-Location "$Env:APPVEYOR_BUILD_FOLDER\Tools\cert\"
-		Write-Output "Get-Location = $(Get-Location)"
-		Write-Output "$($Env:CERT_PATH).enc"
-		Write-Output "-decrypt '$Env:APPVEYOR_BUILD_FOLDER\$($Env:CERT_PATH).enc' "
-		Write-Output "......"
 		& $secure_file_tool -decrypt "$Env:APPVEYOR_BUILD_FOLDER\$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
-		#$Env:APPVEYOR_BUILD_FOLDER\..\appveyor-tools\secure-file.exe -decrypt "$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
 		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
 		Set-Location $current_path
 	}
