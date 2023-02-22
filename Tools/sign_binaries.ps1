@@ -26,6 +26,8 @@ param (
 
 Write-Output "===== Beginning $($PSCmdlet.MyInvocation.MyCommand) ====="
 
+Write-Output $SolutionDir
+Write-Output $CertificatePath
 
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
