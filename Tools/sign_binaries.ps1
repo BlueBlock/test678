@@ -31,20 +31,19 @@ Write-Output $CertificatePath
 
 $current_path = Get-Location; Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"; Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1')); Set-Location $current_path;
 
-Write-Output $CertificatePath
-
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
-
+Write-Output "1"
 #  validate release versions and if the certificate value was passed
 if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
-
+	Write-Output "2"
 	if(-Not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {
+		Write-Output "3"
 		Write-Output "Decrypting cert.."		
 		#appveyor-tools\secure-file -decrypt "$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
 		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
 	}
-
+	Write-Output "4"
 	# make sure the cert is actually available
 	if ($CertificatePath -eq "" -or !(Test-Path -Path $CertificatePath -PathType Leaf))
 	{
