@@ -37,6 +37,7 @@ if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
 
 	if(-Not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {
 		Write-Output "Decrypting cert.."
+		iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
 		appveyor-tools\secure-file -decrypt "$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
 		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
 	}
