@@ -35,7 +35,7 @@ $current_path = Get-Location; Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"; Inv
 
 Write-Output "aaa: 0a"
 
-$timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
+#$timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
 Write-Output "1"
 
