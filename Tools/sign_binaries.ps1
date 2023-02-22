@@ -50,6 +50,8 @@ if ($ConfigurationName -match "Release" -And ("$($Env:CERT_PATH).enc")) {
 		Write-Output "Decrypting cert.."
 		Write-Output "......"
 		$current_path = Get-Location
+		Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"
+		Write-Output "Get-Location = $(Get-Location)"
 		Write-Output "$Env:APPVEYOR_BUILD_FOLDER\..\appveyor-tools\secure-file.exe"
 		Write-Output "$($Env:CERT_PATH).enc"
 		Write-Output "$Env:APPVEYOR_BUILD_FOLDER\..\appveyor-tools\secure-file.exe -decrypt '$Env:APPVEYOR_BUILD_FOLDER\$($Env:CERT_PATH).enc' "
