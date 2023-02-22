@@ -35,7 +35,8 @@ $current_path = Get-Location
 Write-Output "aaa: 0a"
 Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"
 Write-Output "aaa: 0b"
-Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+#Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+Invoke-WebRequest "https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1" | Invoke-Expression
 Write-Output "aaa: 0c"
 Set-Location $current_path
 Write-Output "aaa: 0d"
