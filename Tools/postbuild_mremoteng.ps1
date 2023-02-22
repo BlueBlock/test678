@@ -27,6 +27,12 @@ param (
 
 . "$PSScriptRoot\github_functions.ps1"
 
+if ( [string]::IsNullOrEmpty($CertificatePath) -or [string]::IsNullOrEmpty($CertificatePassword )
+{
+    $CertificatePath = $env:CERT_PATH
+    $CertificatePassword = $env:CERT_PWD
+}
+
 Write-Output "+===========================================================================================+"
 Write-Output "|                               Beginning mRemoteNG Post Build                              |"
 Write-Output "+===========================================================================================+"
