@@ -28,26 +28,12 @@ Write-Output "===== Beginning $($PSCmdlet.MyInvocation.MyCommand) ====="
 
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
-Write-Output "1"
-
-# $current_path = Get-Location
-# Write-Output "aaa: 0a"
-# Set-Location "$Env:APPVEYOR_BUILD_FOLDER\..\"
-# Write-Output "aaa: 0b"
-# #Invoke-Expression ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
-# #Invoke-WebRequest "https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1" | Invoke-Expression
-# Write-Output "aaa: 0c"
-# Set-Location $current_path
-# Write-Output "aaa: 0d"
-
-
 # decrypt cert if on appveyor
 if ($ConfigurationName -match "Release" -And ("$($Env:CERT_PATH).enc")) {
-	Write-Output "2"
 	if(-Not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {
+		Write-Output "Decrypting cert.."
 		$current_path = Get-Location
 		$secure_file_tool = Join-Path -Path $Env:APPVEYOR_BUILD_FOLDER -ChildPath "..\appveyor-tools\secure-file.exe" -Resolve
-		Write-Output "Decrypting cert.."
 		& $secure_file_tool -decrypt "$Env:APPVEYOR_BUILD_FOLDER\$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
 		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
 		Set-Location $current_path
