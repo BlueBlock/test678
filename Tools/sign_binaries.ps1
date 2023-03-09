@@ -26,23 +26,17 @@ param (
 
 Write-Output "===== Beginning $($PSCmdlet.MyInvocation.MyCommand) ====="
 
+
 $timeserver = "http://timestamp.verisign.com/scripts/timstamp.dll"
 
-# decrypt cert if on appveyor
-if ($ConfigurationName -match "Release" -And ("$($Env:CERT_PATH).enc")) {
-	if(-Not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {
-		Write-Output "Decrypting cert.."
-		$current_path = Get-Location
-		$secure_file_tool = Join-Path -Path $Env:APPVEYOR_BUILD_FOLDER -ChildPath "..\appveyor-tools\secure-file.exe" -Resolve
-		& $secure_file_tool -decrypt "$Env:APPVEYOR_BUILD_FOLDER\$($Env:CERT_PATH).enc" -secret "$Env:CERT_DECRYPT_PWD"
-		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
-		Set-Location $current_path
-	}
-}
 
 #  validate release versions and if the certificate value was passed
 if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
-	Write-Output "2a"
+
+	if(-Not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {
+		$CertificatePath = Join-Path -Path $SolutionDir -ChildPath $CertificatePath
+	}
+
 	# make sure the cert is actually available
 	if ($CertificatePath -eq "" -or !(Test-Path -Path $CertificatePath -PathType Leaf))
 	{
@@ -83,7 +77,7 @@ if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
 
 
 	# Release certificate
-	if ($null -ne $cert) {
+	if ($cert -ne $null) {
 	    $cert.Dispose()
 	}
 } else {
