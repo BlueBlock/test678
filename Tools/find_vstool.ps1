@@ -51,9 +51,10 @@ foreach ($searchPath in $rootSearchPaths) {
         Write-Verbose "Searching in folder '$visualStudioFolder'"
         $matchingExes = [System.IO.Directory]::EnumerateFileSystemEntries($visualStudioFolder, $FileName, [System.IO.SearchOption]::AllDirectories)
         foreach ($matchingExe in $matchingExes) {
-            if ((EditBinCertificateIsValid -Path $matchingExe) -and (ToolCanBeExecuted -Path $matchingExe)) {
-                return $matchingExe
-            }
+            # if ((EditBinCertificateIsValid -Path $matchingExe) -and (ToolCanBeExecuted -Path $matchingExe)) {
+            #     return $matchingExe
+            # }
+            return $matchingExe
         }
     }
 }
