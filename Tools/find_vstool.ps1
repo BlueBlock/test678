@@ -22,6 +22,7 @@ function EditBinCertificateIsValid() {
         "5EAD300DC7E4D637948ECB0ED829A072BD152E17"
     )
     $file_signature = Get-AuthenticodeSignature -FilePath $Path
+    Write-Host "file_signature.SignerCertificate.Thumbprint: $($file_signature.SignerCertificate.Thumbprint)"
     if (($file_signature.Status -ne "Valid") -or ($valid_microsoft_cert_thumbprints -notcontains $file_signature.SignerCertificate.Thumbprint)) {
         Write-Warning "Could not validate the signature of $Path"
         return $false
@@ -51,10 +52,9 @@ foreach ($searchPath in $rootSearchPaths) {
         Write-Verbose "Searching in folder '$visualStudioFolder'"
         $matchingExes = [System.IO.Directory]::EnumerateFileSystemEntries($visualStudioFolder, $FileName, [System.IO.SearchOption]::AllDirectories)
         foreach ($matchingExe in $matchingExes) {
-            # if ((EditBinCertificateIsValid -Path $matchingExe) -and (ToolCanBeExecuted -Path $matchingExe)) {
-            #     return $matchingExe
-            # }
-            return $matchingExe
+            if ((EditBinCertificateIsValid -Path $matchingExe) -and (ToolCanBeExecuted -Path $matchingExe)) {
+                return $matchingExe
+            }
         }
     }
 }
