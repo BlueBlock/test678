@@ -59,9 +59,8 @@ foreach ($searchPath in $rootSearchPaths) {
         foreach ($matchingExe in $matchingExes) {
             Write-Host "Match found"
             write-host "visualStudioFolder: $visualStudioFolder"
-            if ((ToolCanBeExecuted -Path $matchingExe)) {
-                write-host "can be executed: $matchingExe"
-            }
+            write-host "can be executed: $matchingExe $(ToolCanBeExecuted -Path $matchingExe)"
+
             if ((EditBinCertificateIsValid -Path $matchingExe)) {
                 write-host "cert is valid: $matchingExe"
             }
