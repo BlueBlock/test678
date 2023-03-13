@@ -49,10 +49,13 @@ $rootSearchPaths = @(
 
 # Returns the first full path to the $FileName that our search can find
 foreach ($searchPath in $rootSearchPaths) {
+    Write-Host "searchPath: $searchPath"
     foreach ($visualStudioFolder in $searchPath) {
         Write-Verbose "Searching in folder '$visualStudioFolder'"
+        Write-Host "Searching in folder '$visualStudioFolder'"
         $matchingExes = [System.IO.Directory]::EnumerateFileSystemEntries($visualStudioFolder, $FileName, [System.IO.SearchOption]::AllDirectories)
         foreach ($matchingExe in $matchingExes) {
+            Write-Host "Match found"
             if ((EditBinCertificateIsValid -Path $matchingExe) -and (ToolCanBeExecuted -Path $matchingExe)) {
                 return $matchingExe
             }
