@@ -39,8 +39,7 @@ function ToolCanBeExecuted {
         [string]
         $Path
     )
-    $null = & $Path
-    Write-Output ($LASTEXITCODE -gt 0)
+    $env:PATHEXT.Contains((Get-Item $Path).Extension.ToUpper())
 }
 
 $rootSearchPaths = @(
