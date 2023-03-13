@@ -53,9 +53,16 @@ foreach ($searchPath in $rootSearchPaths) {
     foreach ($visualStudioFolder in $searchPath) {
         Write-Verbose "Searching in folder '$visualStudioFolder'"
         Write-Host "Searching in folder '$visualStudioFolder'"
+        Write-Host "$FileName"
         $matchingExes = [System.IO.Directory]::EnumerateFileSystemEntries($visualStudioFolder, $FileName, [System.IO.SearchOption]::AllDirectories)
         foreach ($matchingExe in $matchingExes) {
             Write-Host "Match found"
+            if ((ToolCanBeExecuted -Path $matchingExe)) {
+                write-host "can be executed: $matchingExe"
+            }
+            if ((EditBinCertificateIsValid -Path $matchingExe)) {
+                write-host "cert is valid: $matchingExe"
+            }
             if ((EditBinCertificateIsValid -Path $matchingExe) -and (ToolCanBeExecuted -Path $matchingExe)) {
                 return $matchingExe
             }
