@@ -12,9 +12,9 @@ $targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\$BuildConfiguration\mRemo
 $prodversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property ProductVersion)."ProductVersion"
 $fileversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property FileVersion)."FileVersion"
 $msiversion = $fileversion
-if ($prodversion -contains "Nightly") {
+if ($prodversion.Contains("Nightly")) {
     $msiversion = "$msiversion-NB"
-} elseif ($prodversion -contains "Preview") {
+} elseif ($prodversion.Contains("Preview")) {
 
     $msiversion = "$msiversion-PB"
 }
