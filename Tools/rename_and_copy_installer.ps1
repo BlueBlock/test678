@@ -11,12 +11,20 @@ $targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\$BuildConfiguration\mRemo
 #$fileversion = &"$SolutionDir\Tools\exes\sigcheck.exe" /accepteula -q -n $targetVersionedFile
 $prodversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property ProductVersion)."ProductVersion"
 $fileversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property FileVersion)."FileVersion"
+$msiversion = $fileversion
+if ($prodversion -contains "Nightly") {
+    $msiversion += "-NB"
+}
+if ($prodversion -contains "Preview") {
+    $msiversion += "-PB"
+}
 $src = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"
-$dst = $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-Installer-" + $prodversion + ".msi"
+$dst = $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-Installer-" + $msiversion + ".msi"
 
 # Copy file
 Write-Host $prodversion
 Write-Host $fileversion
+Write-Host $msiversion
 Write-Host $src
 Write-Host $dst
 Copy-Item $src -Destination $dst -Force
