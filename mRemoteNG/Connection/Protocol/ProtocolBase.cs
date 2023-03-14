@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using mRemoteNG.UI.Tabs;
 using System.Runtime.Versioning;
+using mRemoteNG.UI.Forms;
 
 // ReSharper disable UnusedMember.Local
 
@@ -233,6 +234,11 @@ namespace mRemoteNG.Connection.Protocol
 
         private void DisposeControl()
         {
+            if (Control == null || !Control.IsAccessible || Control.IsDisposed)
+            {
+                return;
+            }
+
             if (Control.InvokeRequired)
             {
                 var s = new DisposeControlCB(DisposeControl);
