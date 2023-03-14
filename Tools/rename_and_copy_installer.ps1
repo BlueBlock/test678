@@ -25,10 +25,12 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 } else {
 }
 
-$srcMsi = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"
-$dstMsi = $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-Installer-" + $msiversion + ".msi"
-$srcSymbols = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-symbols.zip"
-$dstSymbols= $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-symbols-" + $msiversion + ".zip"
+$srcMsi = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer*.msi"
+#$dstMsi = $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-Installer-" + $msiversion + ".msi"
+$dstMsi = $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\"
+$srcSymbols = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-symbols*.zip"
+#$dstSymbols= $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-symbols-" + $msiversion + ".zip"
+$dstSymbols= $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\"
 
 # Copy file
 Write-Host $prodversion
