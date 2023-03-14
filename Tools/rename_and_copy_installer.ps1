@@ -13,10 +13,10 @@ $prodversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Objec
 $fileversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property FileVersion)."FileVersion"
 $msiversion = $fileversion
 if ($prodversion -contains "Nightly") {
-    $msiversion += "-NB"
-}
-if ($prodversion -contains "Preview") {
-    $msiversion += "-PB"
+    $msiversion = "$msiversion-NB"
+} elseif ($prodversion -contains "Preview") {
+
+    $msiversion = "$msiversion-PB"
 }
 $src = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"
 $dst = $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-Installer-" + $msiversion + ".msi"
