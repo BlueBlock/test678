@@ -18,5 +18,5 @@ using System.Resources;
 [assembly: AssemblyVersion("1.77.3.1832")]
 [assembly: AssemblyFileVersion("1.77.3.1832")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
-[assembly: AssemblyInformationalVersion("1.77.3 (Nightly Build 1832)")]
+[assembly: AssemblyInformationalVersion("1.77.3.1832-NB")]
 
