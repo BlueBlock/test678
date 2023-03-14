@@ -32,6 +32,8 @@ $srcSymbols = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfigu
 #$dstSymbols= $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-symbols-" + $msiversion + ".zip"
 $dstSymbols= $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\"
 
+Get-ChildItem "$SolutionDir\mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\"
+
 # Copy file
 Write-Host $prodversion
 Write-Host $fileversion
