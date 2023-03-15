@@ -71,14 +71,12 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
                 $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
                 $html_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/tag/$GithubTag"
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($msiFile.Name)"
+                Write-Host "html_url: $html_url"
+                Write-Host "browser_download_url: $browser_download_url"
                 $a.nightlybuild.name = "v$TagName"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
                 $a.nightlybuild.assets.installer.browser_download_url = $browser_download_url
-                
-                Write-Host "html_url: $html_url"
-                Write-Host "browser_download_url: $browser_download_url"
-
                 $a.nightlybuild.assets.installer.checksum = $checksum
                 $a.nightlybuild.assets.installer.size = $file_size
                 break
@@ -122,14 +120,12 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
                 $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
                 $html_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/tag/$GithubTag"
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($zipFile.Name)"
+                Write-Host "html_url: $html_url"
+                Write-Host "browser_download_url: $browser_download_url"
                 $a.nightlybuild.name = "v$TagName"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
                 $a.nightlybuild.assets.portable.browser_download_url = $browser_download_url
-                
-                Write-Host "html_url: $html_url"
-                Write-Host "browser_download_url: $browser_download_url"
-
                 $a.nightlybuild.assets.portable.checksum = $checksum
                 $a.nightlybuild.assets.portable.size = $file_size
                 break
