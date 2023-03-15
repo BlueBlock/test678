@@ -22,7 +22,7 @@ param (
 )
 
 
-Write-Output "Begin update_and_upload_website_release_json_file.ps1"
+Write-Output "===== Begin update_and_upload_website_release_json_file.ps1 ====="
 
 
 # determine update channel
@@ -52,7 +52,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     #$websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
 
     # get releases.json from github
+    Write-Host "1"
     $releases_json = Get-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json
+    Write-Host "2"
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
 
