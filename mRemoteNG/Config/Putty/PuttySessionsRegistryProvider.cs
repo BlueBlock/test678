@@ -21,7 +21,7 @@ namespace mRemoteNG.Config.Putty
         private static ManagementEventWatcher _eventWatcher;
 
         #region Public Methods
-        
+
         public override string[] GetSessionNames(bool raw = false)
         {
             if (PuttySessionsKey == null) return null;
@@ -111,19 +111,20 @@ namespace mRemoteNG.Config.Putty
 
             try
             {
-                var key = string.Join("\\", CurrentUserSid, PuttySessionsKey).Replace("\\", "\\\\");
-
-                if (Registry.Users.OpenSubKey(string.Join("\\\\", CurrentUserSid, PuttySessionsKey)) == null) return;
-
-                var query = new WqlEventQuery(
-                    $"SELECT * FROM RegistryTreeChangeEvent WHERE Hive = \'HKEY_USERS\' AND RootPath = \'{key}\'");
+                var keyName = string.Join("\\", CurrentUserSid, PuttySessionsKey).Replace("\\", "\\\\");
+                var sessionsKey = Registry.Users.OpenSubKey(keyName);
+                if (sessionsKey == null)
+                {
+                    Registry.Users.CreateSubKey(keyName);
+                }
+                var query = new WqlEventQuery($"SELECT * FROM RegistryTreeChangeEvent WHERE Hive = \'HKEY_USERS\' AND RootPath = \'{keyName}\'");
                 _eventWatcher = new ManagementEventWatcher(query);
                 _eventWatcher.EventArrived += OnManagementEventArrived;
                 _eventWatcher.Start();
             }
             catch (Exception ex)
             {
-                Runtime.MessageCollector.AddExceptionMessage("PuttySessions.Watcher.StartWatching() failed.", ex,MessageClass.WarningMsg);
+                Runtime.MessageCollector.AddExceptionMessage("PuttySessions.Watcher.StartWatching() failed.", ex, MessageClass.WarningMsg);
                 _eventWatcher?.Stop();
             }
         }
