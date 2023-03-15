@@ -44,7 +44,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
 
-if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
+if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and $WebsiteTargetRepository) {
 
     $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -52,9 +52,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     #$websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
 
     # get releases.json from github
-    Write-Host "1 $WebsiteTargetOwner"
     $releases_json = Get-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json
-    Write-Host "2 $WebsiteTargetRepository"
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
 
