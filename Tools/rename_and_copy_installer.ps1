@@ -5,7 +5,7 @@
     $BuildConfiguration
 )
 
-Write-Output "===== Beginning rename_and_copy_installer.ps1 ====="
+Write-Output "===== Begin rename_and_copy_installer.ps1 ====="
 
 $targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG.exe"
 #$fileversion = &"$SolutionDir\Tools\exes\sigcheck.exe" /accepteula -q -n $targetVersionedFile
