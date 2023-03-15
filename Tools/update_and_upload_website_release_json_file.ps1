@@ -165,7 +165,12 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
         if (Test-Path -Path "$releaseFolder\releases.json") {
             $releases_json_string = Get-Content "$releaseFolder\releases.json" | Out-String
             Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json -CommitMessage "Updated for $UpdateChannel $ModifiedTagName" -Content $releases_json_string -BranchName main
+            Write-Output "publish completed"
+        } else {
+            Write-Output "publish failed 1"
         }
+    } else {
+        Write-Output "publish failed 2"
     }
 
 } else {
