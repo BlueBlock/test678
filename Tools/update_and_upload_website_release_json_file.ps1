@@ -52,9 +52,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
     #$websiteJsonReleaseFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\mRemoteNG.github.io\_data\releases.json" -Resolve
 
     # get releases.json from github
-    Write-Host "1"
+    Write-Host "1 $WebsiteTargetOwner"
     $releases_json = Get-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json
-    Write-Host "2"
+    Write-Host "2 $WebsiteTargetRepository"
     ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
 
