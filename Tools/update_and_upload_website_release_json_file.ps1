@@ -22,7 +22,7 @@ param (
 )
 
 
-Write-Output "Begin create_website_release_json_file.ps1"
+Write-Output "Begin update_and_upload_website_release_json_file.ps1"
 
 
 # determine update channel
@@ -165,4 +165,4 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "") {
 }
 
 
-Write-Output "End create_website_release_json_file.ps1"
+Write-Output "End update_and_upload_website_release_json_file.ps1"
