@@ -10,7 +10,7 @@ param (
     $TargetFileName
 )
 
-Write-Output "LargeAddressAware"
+Write-Output ""
 Write-Output "===== Begin $($PSCmdlet.MyInvocation.MyCommand) ====="
 
 $path_dumpBin = Join-Path -Path $PSScriptRoot -ChildPath "exes\dumpbin.exe"
