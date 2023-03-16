@@ -29,7 +29,7 @@ param (
 
 Write-Output ""
 Write-Output "+===========================================================================================+"
-Write-Output "|                               Beginning mRemoteNG Post Build                              |"
+Write-Output "|                          Beginning mRemoteNG Portable Post Build                          |"
 Write-Output "+===========================================================================================+"
 Format-Table -AutoSize -Wrap -InputObject @{
     "SolutionDir" = $SolutionDir
@@ -76,5 +76,5 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 
 }
 
-Write-Output "End mRemoteNG Post Build"
+Write-Output "End mRemoteNG Portable Post Build"
 Write-Output ""
