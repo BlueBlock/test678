@@ -44,20 +44,20 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
-$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
+#$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
+$ReleaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
 
-if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -and $WebsiteTargetOwner -ne "" -and $WebsiteTargetRepository -ne "" ) {
+if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $MainRepository -ne "" -and $WebsiteTargetOwner -ne "" -and $WebsiteTargetRepository -ne "" ) {
 
-    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
     $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     
     # get releases.json from github
     $releases_json = Get-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json
-    ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$releaseFolder\releases.json"
-    $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
+    ConvertFrom-Base64($releases_json.content) | Out-File -FilePath "$ReleaseFolder\releases.json"
+    $websiteJsonReleaseFile = Get-ChildItem -Path "$ReleaseFolder\releases.json"
 
     # installer
-    $msiFile = Get-ChildItem -Path "$releaseFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
+    $msiFile = Get-ChildItem -Path "$ReleaseFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     Write-Output "UpdateChannel: $UpdateChannel"
     Write-Output "msiFile: $msiFile"
     if (![string]::IsNullOrEmpty($msiFile)) {
@@ -106,7 +106,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
 
 
     # portable
-    $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
+    $zipFile = Get-ChildItem -Path "$ReleaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     Write-Output "UpdateChannel: $UpdateChannel"
     Write-Output "zipFile: $zipFile"
     if (![string]::IsNullOrEmpty($zipFile)) {
@@ -158,19 +158,14 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
     # commit releases.json change
     if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
         Write-Output "publish releases.json"
-        if (Test-Path -Path "$releaseFolder\releases.json") {
-            $releases_json_string = Get-Content "$releaseFolder\releases.json" | Out-String
+        if (Test-Path -Path "$ReleaseFolder\releases.json") {
+            $releases_json_string = Get-Content "$ReleaseFolder\releases.json" | Out-String
             Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path _data\releases.json -CommitMessage "Updated for $UpdateChannel $ModifiedTagName" -Content $releases_json_string -BranchName main
             Write-Output "publish completed"
-        } else {
-            Write-Output "publish failed 1"
         }
-    } else {
-        Write-Output "publish failed 2"
     }
-
 } else {
-    Write-Output "BuildFolder not found"
+    Write-Output "ReleaseFolder not found"
 }
 
 
