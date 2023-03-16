@@ -133,7 +133,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and
         # commit msi update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
             if ((Test-Path -Path "$releaseFolder\$msiUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
-                Write-Output "Publish $msiUpdateFileName to $WebsiteTargetRepository"
+                Write-Output "Publish Update File $msiUpdateFileName to $WebsiteTargetRepository"
                 $update_file_content_string = Get-Content "$releaseFolder\$msiUpdateFileName" | Out-String
                 Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $msiUpdateFileName -CommitMessage "Build $ModifiedTagName" -Content $update_file_content_string -BranchName main
             }
@@ -153,7 +153,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and
         # commit zip update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
             if ((Test-Path -Path "$releaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
-                Write-Output "Publish $zipUpdateFileName to $WebsiteTargetRepository"
+                Write-Output "Publish Update File $zipUpdateFileName to $WebsiteTargetRepository"
                 $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
                 Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $zipUpdateFileName -CommitMessage "Build $ModifiedTagName" -Content $update_file_content_string -BranchName main
             }
