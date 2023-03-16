@@ -131,7 +131,7 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $MainRepository -ne ""
                 $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
                 $html_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/tag/$GithubTag"
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($zipFile.Name)"
-                if (null -eq $a.nightlybuild) {
+                if ($null -eq $a.nightlybuild) {
                     $EmptyAssetJson.Replace("releasetype", "nightlybuild")
                     write-host "$EmptyAssetJson"
                 } else {
