@@ -136,6 +136,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and
                 Write-Output "Publish Update File $msiUpdateFileName to $WebsiteTargetRepository"
                 $update_file_content_string = Get-Content "$releaseFolder\$msiUpdateFileName" | Out-String
                 Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $msiUpdateFileName -CommitMessage "Build $ModifiedTagName" -Content $update_file_content_string -BranchName main
+            } else {
+                Write-Warning "WARNING: Update file does not exist: $releaseFolder\$msiUpdateFileName"
             }
         }
     }
@@ -156,6 +158,8 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and
                 Write-Output "Publish Update File $zipUpdateFileName to $WebsiteTargetRepository"
                 $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
                 Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $zipUpdateFileName -CommitMessage "Build $ModifiedTagName" -Content $update_file_content_string -BranchName main
+            } else {
+                Write-Warning "WARNING: Update file does not exist: $releaseFolder\$zipUpdateFileName"
             }
         }
     }
