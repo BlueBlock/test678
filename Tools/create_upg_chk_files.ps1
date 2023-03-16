@@ -122,13 +122,12 @@ $ReleaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
 
 if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $WebsiteTargetOwner -and $WebsiteTargetRepository) {
 
-    $msiFile = Get-ChildItem -Path "$ReleaseFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
+    $msiFile = Get-ChildItem -Path "$ReleaseFolder\*.msi" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
         $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $ModifiedTagName
         $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
         Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $msiUpdateContents -FilePath "$ReleaseFolder\$msiUpdateFileName"
-        Write-Output "msiUpdateFileName $ReleaseFolder\$msiUpdateFileName"
         
         # commit msi update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
@@ -149,7 +148,6 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $WebsiteTargetOwner -a
         $zipUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Portable
         Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $zipUpdateContents -FilePath "$ReleaseFolder\$zipUpdateFileName"
-        Write-Output "zipUpdateFileName $ReleaseFolder\$zipUpdateFileName"
         
         # commit zip update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
