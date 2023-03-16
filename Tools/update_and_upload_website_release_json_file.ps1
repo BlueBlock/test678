@@ -58,9 +58,9 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $MainRepository -ne ""
 
     # installer
     $msiFile = Get-ChildItem -Path "$ReleaseFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
-    Write-Output "UpdateChannel: $UpdateChannel"
-    Write-Output "msiFile: $msiFile"
     if (![string]::IsNullOrEmpty($msiFile)) {
+        Write-Output "UpdateChannel: $UpdateChannel"
+        Write-Output "msiFile: $msiFile"
         $checksum = (Get-FileHash $msiFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $msiFile).Length
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
@@ -107,9 +107,9 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $MainRepository -ne ""
 
     # portable
     $zipFile = Get-ChildItem -Path "$ReleaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
-    Write-Output "UpdateChannel: $UpdateChannel"
-    Write-Output "zipFile: $zipFile"
     if (![string]::IsNullOrEmpty($zipFile)) {
+        Write-Output "UpdateChannel: $UpdateChannel"
+        Write-Output "zipFile: $zipFile"
         $checksum = (Get-FileHash $zipFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $zipFile).Length
         $a = Get-Content $websiteJsonReleaseFile | ConvertFrom-Json
