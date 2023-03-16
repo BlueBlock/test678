@@ -117,55 +117,53 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
-$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
-write-host "buildFolder: $buildFolder"
+#$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
+$ReleaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
 
-if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and $WebsiteTargetRepository) {
+if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $WebsiteTargetOwner -and $WebsiteTargetRepository) {
 
-    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
-    $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
+    $msiFile = Get-ChildItem -Path "$ReleaseFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($msiFile)) {
         $msiUpdateContents = New-MsiUpdateFileContent -MsiFile $msiFile -TagName $ModifiedTagName
         $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
         Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
-        Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
-        Write-Output "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
+        Tee-Object -InputObject $msiUpdateContents -FilePath "$ReleaseFolder\$msiUpdateFileName"
+        Write-Output "msiUpdateFileName $ReleaseFolder\$msiUpdateFileName"
         
         # commit msi update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
-            if ((Test-Path -Path "$releaseFolder\$msiUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
+            if ((Test-Path -Path "$ReleaseFolder\$msiUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
                 Write-Output "Publish Update File $msiUpdateFileName to $WebsiteTargetRepository"
-                $update_file_content_string = Get-Content "$releaseFolder\$msiUpdateFileName" | Out-String
+                $update_file_content_string = Get-Content "$ReleaseFolder\$msiUpdateFileName" | Out-String
                 Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $msiUpdateFileName -CommitMessage "Build $ModifiedTagName" -Content $update_file_content_string -BranchName main
             } else {
-                Write-Warning "WARNING: Update file does not exist: $releaseFolder\$msiUpdateFileName"
+                Write-Warning "WARNING: Update file does not exist: $ReleaseFolder\$msiUpdateFileName"
             }
         }
     }
 
     # build zip update file
-    $releaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
-    $zipFile = Get-ChildItem -Path "$releaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
+    $zipFile = Get-ChildItem -Path "$ReleaseFolder\*.zip" -Exclude "*-symbols-*.zip" | Sort-Object LastWriteTime | Select-Object -last 1
     if (![string]::IsNullOrEmpty($zipFile)) {
         $zipUpdateContents = New-ZipUpdateFileContent -ZipFile $zipFile -TagName $ModifiedTagName
         $zipUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Portable
         Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
-        Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
-        Write-Output "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
+        Tee-Object -InputObject $zipUpdateContents -FilePath "$ReleaseFolder\$zipUpdateFileName"
+        Write-Output "zipUpdateFileName $ReleaseFolder\$zipUpdateFileName"
         
         # commit zip update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
-            if ((Test-Path -Path "$releaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
+            if ((Test-Path -Path "$ReleaseFolder\$zipUpdateFileName") -and (-not [string]::IsNullOrEmpty($WebsiteTargetRepository))) {
                 Write-Output "Publish Update File $zipUpdateFileName to $WebsiteTargetRepository"
-                $update_file_content_string = Get-Content "$releaseFolder\$zipUpdateFileName" | Out-String
+                $update_file_content_string = Get-Content "$ReleaseFolder\$zipUpdateFileName" | Out-String
                 Set-GitHubContent -OwnerName $WebsiteTargetOwner -RepositoryName $WebsiteTargetRepository -Path $zipUpdateFileName -CommitMessage "Build $ModifiedTagName" -Content $update_file_content_string -BranchName main
             } else {
-                Write-Warning "WARNING: Update file does not exist: $releaseFolder\$zipUpdateFileName"
+                Write-Warning "WARNING: Update file does not exist: $ReleaseFolder\$zipUpdateFileName"
             }
         }
     }
 } else {
-    Write-Output "BuildFolder not found"
+    Write-Output "ReleaseFolder not found"
 }
 
 Write-Output "End create_upg_chk_files.ps1"
