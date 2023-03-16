@@ -61,7 +61,9 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
     $websiteJsonReleaseFile = Get-ChildItem -Path "$releaseFolder\releases.json"
 
     # installer
-    $msiFile = Get-ChildItem -Path "$buildFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
+    $msiFile = Get-ChildItem -Path "$releaseFolder\*.msi" | Sort-Object LastWriteTime | Select-Object -last 1
+    Write-Host "UpdateChannel: $UpdateChannel"
+    Write-Host "msiFile: $msiFile"
     if (![string]::IsNullOrEmpty($msiFile)) {
         $checksum = (Get-FileHash $msiFile -Algorithm SHA512).Hash
         $file_size = (Get-ChildItem $msiFile).Length
@@ -73,7 +75,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($msiFile.Name)"
                 Write-Host "html_url: $html_url"
                 Write-Host "browser_download_url: $browser_download_url"
-                $a.nightlybuild.name = "v$TagName"
+                $a.nightlybuild.name = "v$TagName-NB"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
                 $a.nightlybuild.assets.installer.browser_download_url = $browser_download_url
@@ -85,7 +87,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
                 $GithubTag = "$TagName-PB"
                 $html_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/tag/$GithubTag"
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($msiFile.Name)"
-                $a.prerelease.name = "v$TagName"
+                $a.prerelease.name = "v$TagName-PB"
                 $a.prerelease.published_at = $published_at
                 $a.prerelease.html_url = $html_url
                 $a.prerelease.assets.installer.browser_download_url = $browser_download_url
@@ -122,7 +124,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($zipFile.Name)"
                 Write-Host "html_url: $html_url"
                 Write-Host "browser_download_url: $browser_download_url"
-                $a.nightlybuild.name = "v$TagName"
+                $a.nightlybuild.name = "v$TagName-NB"
                 $a.nightlybuild.published_at = $published_at
                 $a.nightlybuild.html_url = $html_url
                 $a.nightlybuild.assets.portable.browser_download_url = $browser_download_url
@@ -134,7 +136,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $MainRepository -ne "" -
                 $GithubTag = "$TagName-PB"
                 $html_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/tag/$GithubTag"
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($zipFile.Name)"
-                $a.prerelease.name = "v$TagName"
+                $a.prerelease.name = "v$TagName-PB"
                 $a.prerelease.published_at = $published_at
                 $a.prerelease.html_url = $html_url
                 $a.prerelease.assets.portable.browser_download_url = $browser_download_url
