@@ -97,19 +97,20 @@ function Resolve-UpdateCheckFileName {
     Write-Output $fileName
 }
 
+Write-Output ""
 Write-Output "===== Begin create_upg_chk_files.ps1 ====="
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
-    write-host "UpdateChannel = Nightly"
+    Write-Output "UpdateChannel = Nightly"
     $UpdateChannel = "Nightly"
     $ModifiedTagName = "$PreTagName-$TagName-NB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Preview)") {
-    write-host "UpdateChannel = Preview"
+    Write-Output "UpdateChannel = Preview"
     $UpdateChannel = "Preview"
     $ModifiedTagName = "v$TagName-PB"
 } elseif ($env:APPVEYOR_PROJECT_NAME -match "(Stable)") {
-    write-host "UpdateChannel = Stable"
+    Write-Output "UpdateChannel = Stable"
     $UpdateChannel = "Stable"
     $ModifiedTagName = "v" + $TagName.Split("-")[0]
 } else {
@@ -127,7 +128,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and
         $msiUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Normal
         Write-Output "`n`nMSI Update Check File Contents ($msiUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $msiUpdateContents -FilePath "$releaseFolder\$msiUpdateFileName"
-        write-host "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
+        Write-Output "msiUpdateFileName $releaseFolder\$msiUpdateFileName"
         
         # commit msi update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
@@ -147,7 +148,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and
         $zipUpdateFileName = Resolve-UpdateCheckFileName -UpdateChannel $UpdateChannel -Type Portable
         Write-Output "`n`nZip Update Check File Contents ($zipUpdateFileName)`n------------------------------"
         Tee-Object -InputObject $zipUpdateContents -FilePath "$releaseFolder\$zipUpdateFileName"
-        write-host "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
+        Write-Output "zipUpdateFileName $releaseFolder\$zipUpdateFileName"
         
         # commit zip update txt file
         if ($env:WEBSITE_UPDATE_ENABLED.ToLower() -eq "true") {
@@ -159,7 +160,7 @@ if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and
         }
     }
 } else {
-    write-host "BuildFolder not found"
+    Write-Output "BuildFolder not found"
 }
 
 Write-Output "End create_upg_chk_files.ps1"
