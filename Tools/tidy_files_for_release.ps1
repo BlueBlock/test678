@@ -42,4 +42,5 @@ if ($ConfigurationName -match "Release") {
     Write-Output "We will not remove anything - this is not a release build."
 }
 
+Write-Output "End $($PSCmdlet.MyInvocation.MyCommand)"
 Write-Output ""

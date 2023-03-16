@@ -28,4 +28,5 @@ else
     Write-Output $output.ToString().TrimStart(" ")
 }
 
+Write-Output "End $($PSCmdlet.MyInvocation.MyCommand)"
 Write-Output ""

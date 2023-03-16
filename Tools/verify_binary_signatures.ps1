@@ -61,4 +61,5 @@ if ($ConfigurationName -match "Release" -And ($CertificatePath)) {
     Write-Output "Config: $($ConfigurationName)`tCertPath: $($CertificatePath)"
 }
 
+Write-Output "End $($PSCmdlet.MyInvocation.MyCommand)"
 Write-Output ""

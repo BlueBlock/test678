@@ -77,3 +77,4 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 }
 
 Write-Output "End mRemoteNG Post Build"
+Write-Output ""

@@ -34,3 +34,6 @@ $dstSymbols = $SolutionDir + "Release\mRemoteNG-Installer-Symbols-" + $msiversio
 # Copy files
 Copy-Item $srcMsi -Destination $dstMsi -Force
 Copy-Item $srcSymbols -Destination $dstSymbols -Force
+
+Write-Output "End rename_and_copy_installer.ps1"
+Write-Output ""

@@ -25,6 +25,9 @@ param (
 Write-Output ""
 Write-Output "===== Begin update_and_upload_website_release_json_file.ps1 ====="
 
+Write-Output "Begin $($PSCmdlet.MyInvocation.MyCommand)"
+Write-Output ""
+
 $MainRepository = $Env:APPVEYOR_REPO_NAME.Split("/\")[1]
 
 # determine update channel
@@ -169,4 +172,5 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $MainRepository -ne ""
 }
 
 
-Write-Output "End update_and_upload_website_release_json_file.ps1"
+Write-Output "End $($PSCmdlet.MyInvocation.MyCommand)"
+Write-Output ""

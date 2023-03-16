@@ -96,4 +96,5 @@ if ($ConfigurationName -eq "Release Portable") {
     }
 }
 
+Write-Output "End $($PSCmdlet.MyInvocation.MyCommand)"
 Write-Output ""

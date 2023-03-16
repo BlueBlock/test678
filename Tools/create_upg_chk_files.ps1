@@ -99,6 +99,8 @@ function Resolve-UpdateCheckFileName {
 
 Write-Output ""
 Write-Output "===== Begin create_upg_chk_files.ps1 ====="
+Write-Output "Begin $($PSCmdlet.MyInvocation.MyCommand)"
+Write-Output ""
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
@@ -164,4 +166,5 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $WebsiteTargetOwner -a
     Write-Output "ReleaseFolder not found"
 }
 
-Write-Output "End create_upg_chk_files.ps1"
+Write-Output "End $($PSCmdlet.MyInvocation.MyCommand)"
+Write-Output ""

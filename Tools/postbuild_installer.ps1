@@ -55,3 +55,4 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 }
 
 Write-Output "End mRemoteNG Installer Post Build"
+Write-Output ""
