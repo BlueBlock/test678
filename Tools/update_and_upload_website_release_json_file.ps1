@@ -23,10 +23,7 @@ param (
 
 
 Write-Output ""
-Write-Output "===== Begin update_and_upload_website_release_json_file.ps1 ====="
-
-Write-Output "Begin $($PSCmdlet.MyInvocation.MyCommand)"
-Write-Output ""
+Write-Output "===== Begin $($PSCmdlet.MyInvocation.MyCommand) ====="
 
 $MainRepository = $Env:APPVEYOR_REPO_NAME.Split("/\")[1]
 
@@ -46,16 +43,6 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 } else {
     $UpdateChannel = ""
 }
-
-$EmptyAssetJson = @"
-{
-    "releasetype": {
-        "browser_download_url": "",
-        "checksum": "",
-        "size": 0
-    }
-}
-"@
 
 #$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
 $ReleaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
@@ -82,17 +69,12 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $MainRepository -ne ""
                 $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
                 $html_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/tag/$GithubTag"
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($msiFile.Name)"
-                if ($null -eq $a.nightlybuild) {
-                    $EmptyAssetJson.Replace("releasetype", "installer")
-                    write-host "$EmptyAssetJson"
-                } else {
-                    $a.nightlybuild.name = "v$TagName-NB"
-                    $a.nightlybuild.published_at = $published_at
-                    $a.nightlybuild.html_url = $html_url
-                    $a.nightlybuild.assets.installer.browser_download_url = $browser_download_url
-                    $a.nightlybuild.assets.installer.checksum = $checksum
-                    $a.nightlybuild.assets.installer.size = $file_size
-                }                
+                $a.nightlybuild.name = "v$TagName-NB"
+                $a.nightlybuild.published_at = $published_at
+                $a.nightlybuild.html_url = $html_url
+                $a.nightlybuild.assets.installer.browser_download_url = $browser_download_url
+                $a.nightlybuild.assets.installer.checksum = $checksum
+                $a.nightlybuild.assets.installer.size = $file_size
                 break
             }
             "Preview" {
@@ -136,17 +118,12 @@ if ($UpdateChannel -ne "" -and $ReleaseFolder -ne "" -and $MainRepository -ne ""
                 $GithubTag = "$((Get-Date).ToUniversalTime().ToString("yyyyMMdd"))-$TagName-NB"
                 $html_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/tag/$GithubTag"
                 $browser_download_url = "https://github.com/$WebsiteTargetOwner/$MainRepository/releases/download/$GithubTag/$($zipFile.Name)"
-                if ($null -eq $a.nightlybuild) {
-                    $EmptyAssetJson.Replace("releasetype", "portable")
-                    write-host "$EmptyAssetJson"
-                } else {
-                    $a.nightlybuild.name = "v$TagName-NB"
-                    $a.nightlybuild.published_at = $published_at
-                    $a.nightlybuild.html_url = $html_url
-                    $a.nightlybuild.assets.portable.browser_download_url = $browser_download_url
-                    $a.nightlybuild.assets.portable.checksum = $checksum
-                    $a.nightlybuild.assets.portable.size = $file_size
-                }
+                $a.nightlybuild.name = "v$TagName-NB"
+                $a.nightlybuild.published_at = $published_at
+                $a.nightlybuild.html_url = $html_url
+                $a.nightlybuild.assets.portable.browser_download_url = $browser_download_url
+                $a.nightlybuild.assets.portable.checksum = $checksum
+                $a.nightlybuild.assets.portable.size = $file_size
                 break
             }
             "Preview" {

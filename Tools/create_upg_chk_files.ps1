@@ -98,9 +98,7 @@ function Resolve-UpdateCheckFileName {
 }
 
 Write-Output ""
-Write-Output "===== Begin create_upg_chk_files.ps1 ====="
-Write-Output "Begin $($PSCmdlet.MyInvocation.MyCommand)"
-Write-Output ""
+Write-Output "===== Begin $($PSCmdlet.MyInvocation.MyCommand) ====="
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
