@@ -118,6 +118,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 }
 
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
+write-host "buildFolder: $buildFolder"
 
 if ($UpdateChannel -ne "" -and $buildFolder -ne "" -and $WebsiteTargetOwner -and $WebsiteTargetRepository) {
 
