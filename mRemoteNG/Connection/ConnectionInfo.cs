@@ -251,7 +251,7 @@ namespace mRemoteNG.Connection
                 switch (protocol)
                 {
                     case ProtocolType.RDP:
-                        return (int)RdpProtocol6.Defaults.Port;
+                        return (int)RdpProtocol.Defaults.Port;
                     case ProtocolType.VNC:
                         return (int)ProtocolVNC.Defaults.Port;
                     case ProtocolType.SSH1:
@@ -356,7 +356,8 @@ namespace mRemoteNG.Connection
         private void SetRedirectDefaults()
         {
             RedirectKeys = Settings.Default.ConDefaultRedirectKeys;
-            RedirectDiskDrives = Settings.Default.ConDefaultRedirectDiskDrives;
+            RedirectDiskDrives = (RDPDiskDrives)Enum.Parse(typeof(RDPDiskDrives), Settings.Default.ConDefaultRedirectDiskDrives);
+            RedirectDiskDrivesCustom = Settings.Default.ConDefaultRedirectDiskDrivesCustom;
             RedirectPrinters = Settings.Default.ConDefaultRedirectPrinters;
             RedirectClipboard = Settings.Default.ConDefaultRedirectClipboard;
             RedirectPorts = Settings.Default.ConDefaultRedirectPorts;

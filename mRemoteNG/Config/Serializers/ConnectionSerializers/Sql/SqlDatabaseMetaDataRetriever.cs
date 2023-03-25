@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Globalization;
 using System.Runtime.Versioning;
+using System.Security;
 using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.Config.DatabaseConnectors;
@@ -11,7 +12,7 @@ using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree.Root;
 
-namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
+namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Sql
 {
     [SupportedOSPlatform("windows")]
     public class SqlDatabaseMetaDataRetriever
@@ -48,7 +49,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
                 {
                     Name = dbDataReader["Name"] as string ?? "",
                     Protected = dbDataReader["Protected"] as string ?? "",
-                    Export = (bool)dbDataReader["Export"],
+                    Export = dbDataReader["Export"].Equals(1),
                     ConfVersion = new Version(Convert.ToString(dbDataReader["confVersion"], CultureInfo.InvariantCulture) ?? string.Empty)
                 };
             }
@@ -68,13 +69,18 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
 
         public void WriteDatabaseMetaData(RootNodeInfo rootTreeNode, IDatabaseConnector databaseConnector)
         {
+            // TODO: use transaction
+
             var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
+
             string strProtected;
+
             if (rootTreeNode != null)
             {
                 if (rootTreeNode.Password)
                 {
-                    var password = rootTreeNode.PasswordString.ConvertToSecureString();
+                    SecureString password = rootTreeNode.PasswordString.ConvertToSecureString();
+
                     strProtected = cryptographyProvider.Encrypt("ThisIsProtected", password);
                 }
                 else
@@ -87,7 +93,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
                 strProtected = cryptographyProvider.Encrypt("ThisIsNotProtected", Runtime.EncryptionKey);
             }
 
-            var cmd = databaseConnector.DbCommand("DELETE FROM tblRoot");
+            var cmd = databaseConnector.DbCommand("TRUNCATE TABLE tblRoot");
             cmd.ExecuteNonQuery();
 
             if (rootTreeNode != null)
@@ -95,7 +101,8 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
                 cmd = databaseConnector.DbCommand(
                         "INSERT INTO tblRoot (Name, Export, Protected, ConfVersion) VALUES('" +
                         MiscTools.PrepareValueForDB(rootTreeNode.Name) + "', 0, '" + strProtected + "','" +
-                        ConnectionsFileInfo.ConnectionFileVersion.ToString() + "')");
+                        ConnectionsFileInfo.ConnectionFileVersion + "')");
+
                 cmd.ExecuteNonQuery();
             }
             else
@@ -112,8 +119,8 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
             {
                 // ANSI SQL way.  Works in PostgreSQL, MSSQL, MySQL.
                 var cmd = databaseConnector.DbCommand("select case when exists((select * from information_schema.tables where table_name = '" + tableName + "')) then 1 else 0 end");
-                cmd.ExecuteNonQuery();
-                exists = (int)cmd.ExecuteScalar()! == 1;
+                var cmdResult = Convert.ToInt16(cmd.ExecuteScalar());
+                exists = (cmdResult == 1);
             }
             catch
             {
@@ -121,7 +128,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
                 {
                     // Other RDBMS.  Graceful degradation
                     exists = true;
-                    var cmdOthers = databaseConnector.DbCommand("select 1 from " + tableName + " where 1 = 0");
+                    DbCommand cmdOthers = databaseConnector.DbCommand("select 1 from " + tableName + " where 1 = 0");
                     cmdOthers.ExecuteNonQuery();
                 }
                 catch
@@ -136,11 +143,13 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql
         private void InitializeDatabaseSchema(IDatabaseConnector databaseConnector)
         {
             string sql;
-
-            var t = databaseConnector.GetType();
-
+            
             if (databaseConnector.GetType() == typeof(MSSqlDatabaseConnector))
             {
+                // *********************************
+                // ********* MICROSOFT SQL *********
+                // *********************************
+
                 sql = @"
 if exists (select * from dbo.sysobjects
     where id = object_id(N'[dbo].[tblCons]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
@@ -204,13 +213,14 @@ CREATE TABLE [dbo].[tblCons] (
     [RdpVersion] varchar(10) NULL,
     [RedirectAudioCapture] bit NOT NULL,
     [RedirectClipboard] bit NOT NULL,
-    [RedirectDiskDrives] bit NOT NULL,
+    [RedirectDiskDrives] varchar(32) DEFAULT NULL,
+    [RedirectDiskDrivesCustom] varchar(32) DEFAULT NULL,
     [RedirectKeys] bit NOT NULL,
     [RedirectPorts] bit NOT NULL,
     [RedirectPrinters] bit NOT NULL,
     [RedirectSmartCards] bit NOT NULL,
     [RedirectSound] varchar(64) NOT NULL,
-    [RenderingEngine] varchar(16) NULL,
+    [RenderingEngine] varchar(32) NULL,
     [Resolution] varchar(32) NOT NULL,
     [SSHOptions] varchar(1024) NOT NULL,
     [SSHTunnelConnectionName] varchar(128) NOT NULL,
@@ -275,6 +285,7 @@ CREATE TABLE [dbo].[tblCons] (
     [InheritRedirectAudioCapture] bit NOT NULL,
     [InheritRedirectClipboard] bit NOT NULL,
     [InheritRedirectDiskDrives] bit NOT NULL,
+    [InheritRedirectDiskDrivesCustom] bit NOT NULL,
     [InheritRedirectKeys] bit NOT NULL,
     [InheritRedirectPorts] bit NOT NULL,
     [InheritRedirectPrinters] bit NOT NULL,
@@ -315,6 +326,7 @@ CREATE TABLE [dbo].[tblCons] (
     [EC2InstanceId] varchar(32) NULL,
     [ExternalCredentialProvider] varchar(256) NULL,
     [ExternalAddressProvider] varchar(256) NULL,
+    [UserViaAPI] varchar(512) NOT NULL,
 ) ON [PRIMARY]
 
 CREATE TABLE [dbo].[tblRoot] (
@@ -331,6 +343,10 @@ CREATE TABLE [dbo].[tblUpdate] (
             }
             else if (databaseConnector.GetType() == typeof(MySqlDatabaseConnector))
             {
+                // **************************
+                // ********* MY SQL *********
+                // **************************
+
                 sql = @"
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -358,24 +374,24 @@ CREATE TABLE `tblCons` (
     `LastChange` datetime NOT NULL,
     `Name` varchar(128) NOT NULL,
     `Type` varchar(32) NOT NULL,
-    `Expanded` tinyint(1) NOT NULL,
-    `AutomaticResize` tinyint(1) NOT NULL DEFAULT 1,
-    `CacheBitmaps` tinyint(1) NOT NULL,
+    `Expanded` tinyint NOT NULL,
+    `AutomaticResize` tinyint NOT NULL DEFAULT 1,
+    `CacheBitmaps` tinyint NOT NULL,
     `Colors` varchar(32) NOT NULL,
-    `ConnectToConsole` tinyint(1) NOT NULL,
-    `Connected` tinyint(1) NOT NULL,
+    `ConnectToConsole` tinyint NOT NULL,
+    `Connected` tinyint NOT NULL,
     `Description` varchar(1024) DEFAULT NULL,
-    `DisableCursorBlinking` tinyint(1) NOT NULL,
-    `DisableCursorShadow` tinyint(1) NOT NULL,
-    `DisableFullWindowDrag` tinyint(1) NOT NULL,
-    `DisableMenuAnimations` tinyint(1) NOT NULL,
-    `DisplayThemes` tinyint(1) NOT NULL,
-    `DisplayWallpaper` tinyint(1) NOT NULL,
+    `DisableCursorBlinking` tinyint NOT NULL,
+    `DisableCursorShadow` tinyint NOT NULL,
+    `DisableFullWindowDrag` tinyint NOT NULL,
+    `DisableMenuAnimations` tinyint NOT NULL,
+    `DisplayThemes` tinyint NOT NULL,
+    `DisplayWallpaper` tinyint NOT NULL,
     `Domain` varchar(512) DEFAULT NULL,
-    `EnableDesktopComposition` tinyint(1) NOT NULL,
-    `EnableFontSmoothing` tinyint(1) NOT NULL,
+    `EnableDesktopComposition` tinyint NOT NULL,
+    `EnableFontSmoothing` tinyint NOT NULL,
     `ExtApp` varchar(256) DEFAULT NULL,
-    `Favorite` tinyint(1) NOT NULL,
+    `Favorite` tinyint NOT NULL,
     `Hostname` varchar(512) DEFAULT NULL,
     `Icon` varchar(128) NOT NULL,
     `LoadBalanceInfo` varchar(1024) DEFAULT NULL,
@@ -394,26 +410,27 @@ CREATE TABLE `tblCons` (
     `RDGatewayUsageMethod` varchar(32) NOT NULL,
     `RDGatewayUseConnectionCredentials` varchar(32) NOT NULL,
     `RDGatewayUsername` varchar(512) DEFAULT NULL,
-    `RDPAlertIdleTimeout` tinyint(1) NOT NULL,
+    `RDPAlertIdleTimeout` tinyint NOT NULL,
     `RDPAuthenticationLevel` varchar(32) NOT NULL,
     `RDPMinutesToIdleTimeout` int(11) NOT NULL,
     `RdpVersion` varchar(10) DEFAULT NULL,
-    `RedirectAudioCapture` tinyint(1) NOT NULL,
-    `RedirectClipboard` tinyint(1) NOT NULL,
-    `RedirectDiskDrives` tinyint(1) NOT NULL,
-    `RedirectKeys` tinyint(1) NOT NULL,
-    `RedirectPorts` tinyint(1) NOT NULL,
-    `RedirectPrinters` tinyint(1) NOT NULL,
-    `RedirectSmartCards` tinyint(1) NOT NULL,
+    `RedirectAudioCapture` tinyint NOT NULL,
+    `RedirectClipboard` tinyint NOT NULL,
+    `RedirectDiskDrives` varchar(32) DEFAULT NULL,
+    `RedirectDiskDrivesCustom` varchar(32) DEFAULT NULL,
+    `RedirectKeys` tinyint NOT NULL,
+    `RedirectPorts` tinyint NOT NULL,
+    `RedirectPrinters` tinyint NOT NULL,
+    `RedirectSmartCards` tinyint NOT NULL,
     `RedirectSound` varchar(64) NOT NULL,
-    `RenderingEngine` varchar(16) DEFAULT NULL,
+    `RenderingEngine` varchar(32) DEFAULT NULL,
     `Resolution` varchar(32) NOT NULL,
     `SSHOptions` varchar(1024) NOT NULL,
     `SSHTunnelConnectionName` varchar(128) NOT NULL,
     `SoundQuality` varchar(20) NOT NULL,
-    `UseCredSsp` tinyint(1) NOT NULL,
-    `UseEnhancedMode` tinyint(1) NOT NULL,
-    `UseVmId` tinyint(1) NOT NULL,
+    `UseCredSsp` tinyint NOT NULL,
+    `UseEnhancedMode` tinyint NOT NULL,
+    `UseVmId` tinyint NOT NULL,
     `UserField` varchar(256) DEFAULT NULL,
     `Username` varchar(512) DEFAULT NULL,
     `VNCAuthMode` varchar(10) DEFAULT NULL,
@@ -426,91 +443,93 @@ CREATE TABLE `tblCons` (
     `VNCProxyType` varchar(20) DEFAULT NULL,
     `VNCProxyUsername` varchar(512) DEFAULT NULL,
     `VNCSmartSizeMode` varchar(20) DEFAULT NULL,
-    `VNCViewOnly` tinyint(1) NOT NULL,
+    `VNCViewOnly` tinyint NOT NULL,
     `VmId` varchar(512) DEFAULT NULL,
     `ICAEncryptionStrength` varchar(32) NOT NULL,
-    `InheritAutomaticResize` tinyint(1) NOT NULL,
-    `InheritCacheBitmaps` tinyint(1) NOT NULL,
-    `InheritColors` tinyint(1) NOT NULL,
-    `InheritDescription` tinyint(1) NOT NULL,
-    `InheritDisableCursorBlinking` tinyint(1) NOT NULL,
-    `InheritDisableCursorShadow` tinyint(1) NOT NULL,
-    `InheritDisableFullWindowDrag` tinyint(1) NOT NULL,
-    `InheritDisableMenuAnimations` tinyint(1) NOT NULL,
-    `InheritDisplayThemes` tinyint(1) NOT NULL,
-    `InheritDisplayWallpaper` tinyint(1) NOT NULL,
-    `InheritDomain` tinyint(1) NOT NULL,
-    `InheritEnableDesktopComposition` tinyint(1) NOT NULL,
-    `InheritEnableFontSmoothing` tinyint(1) NOT NULL,
-    `InheritExtApp` tinyint(1) NOT NULL,
-    `InheritFavorite` tinyint(1) NOT NULL,
-    `InheritICAEncryptionStrength` tinyint(1) NOT NULL,
-    `InheritIcon` tinyint(1) NOT NULL,
-    `InheritLoadBalanceInfo` tinyint(1) NOT NULL,
-    `InheritMacAddress` tinyint(1) NOT NULL,
-    `InheritOpeningCommand` tinyint(1) NOT NULL,
-    `InheritPanel` tinyint(1) NOT NULL,
-    `InheritPassword` tinyint(1) NOT NULL,
-    `InheritPort` tinyint(1) NOT NULL,
-    `InheritPostExtApp` tinyint(1) NOT NULL,
-    `InheritPreExtApp` tinyint(1) NOT NULL,
-    `InheritProtocol` tinyint(1) NOT NULL,
-    `InheritPuttySession` tinyint(1) NOT NULL,
-    `InheritRDGatewayDomain` tinyint(1) NOT NULL,
-    `InheritRDGatewayHostname` tinyint(1) NOT NULL,
-    `InheritRDGatewayPassword` tinyint(1) NOT NULL,
-    `InheritRDGatewayUsageMethod` tinyint(1) NOT NULL,
-    `InheritRDGatewayUseConnectionCredentials` tinyint(1) NOT NULL,
-    `InheritRDGatewayExternalCredentialProvider` tinyint(1) NOT NULL,
-    `InheritRDGatewayUsername` tinyint(1) NOT NULL,
-    `InheritRDGatewayUserViaAPI` tinyint(1) NOT NULL,
-    `InheritRDPAlertIdleTimeout` tinyint(1) NOT NULL,
-    `InheritRDPAuthenticationLevel` tinyint(1) NOT NULL,
-    `InheritRDPMinutesToIdleTimeout` tinyint(1) NOT NULL,
-    `InheritRdpVersion` tinyint(1) NOT NULL,
-    `InheritRedirectAudioCapture` tinyint(1) NOT NULL,
-    `InheritRedirectClipboard` tinyint(1) NOT NULL,
-    `InheritRedirectDiskDrives` tinyint(1) NOT NULL,
-    `InheritRedirectKeys` tinyint(1) NOT NULL,
-    `InheritRedirectPorts` tinyint(1) NOT NULL,
-    `InheritRedirectPrinters` tinyint(1) NOT NULL,
-    `InheritRedirectSmartCards` tinyint(1) NOT NULL,
-    `InheritRedirectSound` tinyint(1) NOT NULL,
-    `InheritRenderingEngine` tinyint(1) NOT NULL,
-    `InheritResolution` tinyint(1) NOT NULL,
-    `InheritSSHOptions` tinyint(1) NOT NULL,
-    `InheritSSHTunnelConnectionName` tinyint(1) NOT NULL,
-    `InheritSoundQuality` tinyint(1) NOT NULL,
-    `InheritUseConsoleSession` tinyint(1) NOT NULL,
-    `InheritUseCredSsp` tinyint(1) NOT NULL,
-    `InheritUseRestrictedAdmin` tinyint(1) NOT NULL,
-    `InheritUseRCG` tinyint(1) NOT NULL,
-    `InheritExternalCredentialProvider` tinyint(1) NOT NULL,
-    `InheritUserViaAPI` tinyint(1) NOT NULL,
-    `UseRestrictedAdmin` tinyint(1) NOT NULL,
-    `UseRCG` tinyint(1) NOT NULL,
-    `InheritUseEnhancedMode` tinyint(1) DEFAULT NULL,
-    `InheritUseVmId` tinyint(1) DEFAULT NULL,
-    `InheritUserField` tinyint(1) NOT NULL,
-    `InheritUsername` tinyint(1) NOT NULL,
-    `InheritVNCAuthMode` tinyint(1) NOT NULL,
-    `InheritVNCColors` tinyint(1) NOT NULL,
-    `InheritVNCCompression` tinyint(1) NOT NULL,
-    `InheritVNCEncoding` tinyint(1) NOT NULL,
-    `InheritVNCProxyIP` tinyint(1) NOT NULL,
-    `InheritVNCProxyPassword` tinyint(1) NOT NULL,
-    `InheritVNCProxyPort` tinyint(1) NOT NULL,
-    `InheritVNCProxyType` tinyint(1) NOT NULL,
-    `InheritVNCProxyUsername` tinyint(1) NOT NULL,
-    `InheritVNCSmartSizeMode` tinyint(1) NOT NULL,
-    `InheritVNCViewOnly` tinyint(1) NOT NULL,
-    `InheritVmId` tinyint(1) NOT NULL,
+    `InheritAutomaticResize` tinyint NOT NULL,
+    `InheritCacheBitmaps` tinyint NOT NULL,
+    `InheritColors` tinyint NOT NULL,
+    `InheritDescription` tinyint NOT NULL,
+    `InheritDisableCursorBlinking` tinyint NOT NULL,
+    `InheritDisableCursorShadow` tinyint NOT NULL,
+    `InheritDisableFullWindowDrag` tinyint NOT NULL,
+    `InheritDisableMenuAnimations` tinyint NOT NULL,
+    `InheritDisplayThemes` tinyint NOT NULL,
+    `InheritDisplayWallpaper` tinyint NOT NULL,
+    `InheritDomain` tinyint NOT NULL,
+    `InheritEnableDesktopComposition` tinyint NOT NULL,
+    `InheritEnableFontSmoothing` tinyint NOT NULL,
+    `InheritExtApp` tinyint NOT NULL,
+    `InheritFavorite` tinyint NOT NULL,
+    `InheritICAEncryptionStrength` tinyint NOT NULL,
+    `InheritIcon` tinyint NOT NULL,
+    `InheritLoadBalanceInfo` tinyint NOT NULL,
+    `InheritMacAddress` tinyint NOT NULL,
+    `InheritOpeningCommand` tinyint NOT NULL,
+    `InheritPanel` tinyint NOT NULL,
+    `InheritPassword` tinyint NOT NULL,
+    `InheritPort` tinyint NOT NULL,
+    `InheritPostExtApp` tinyint NOT NULL,
+    `InheritPreExtApp` tinyint NOT NULL,
+    `InheritProtocol` tinyint NOT NULL,
+    `InheritPuttySession` tinyint NOT NULL,
+    `InheritRDGatewayDomain` tinyint NOT NULL,
+    `InheritRDGatewayHostname` tinyint NOT NULL,
+    `InheritRDGatewayPassword` tinyint NOT NULL,
+    `InheritRDGatewayUsageMethod` tinyint NOT NULL,
+    `InheritRDGatewayUseConnectionCredentials` tinyint NOT NULL,
+    `InheritRDGatewayExternalCredentialProvider` tinyint NOT NULL,
+    `InheritRDGatewayUsername` tinyint NOT NULL,
+    `InheritRDGatewayUserViaAPI` tinyint NOT NULL,
+    `InheritRDPAlertIdleTimeout` tinyint NOT NULL,
+    `InheritRDPAuthenticationLevel` tinyint NOT NULL,
+    `InheritRDPMinutesToIdleTimeout` tinyint NOT NULL,
+    `InheritRdpVersion` tinyint NOT NULL,
+    `InheritRedirectAudioCapture` tinyint NOT NULL,
+    `InheritRedirectClipboard` tinyint NOT NULL,
+    `InheritRedirectDiskDrives` tinyint NOT NULL,
+    `InheritRedirectDiskDrivesCustom` tinyint NOT NULL,
+    `InheritRedirectKeys` tinyint NOT NULL,
+    `InheritRedirectPorts` tinyint NOT NULL,
+    `InheritRedirectPrinters` tinyint NOT NULL,
+    `InheritRedirectSmartCards` tinyint NOT NULL,
+    `InheritRedirectSound` tinyint NOT NULL,
+    `InheritRenderingEngine` tinyint NOT NULL,
+    `InheritResolution` tinyint NOT NULL,
+    `InheritSSHOptions` tinyint NOT NULL,
+    `InheritSSHTunnelConnectionName` tinyint NOT NULL,
+    `InheritSoundQuality` tinyint NOT NULL,
+    `InheritUseConsoleSession` tinyint NOT NULL,
+    `InheritUseCredSsp` tinyint NOT NULL,
+    `InheritUseRestrictedAdmin` tinyint NOT NULL,
+    `InheritUseRCG` tinyint NOT NULL,
+    `InheritExternalCredentialProvider` tinyint NOT NULL,
+    `InheritUserViaAPI` tinyint NOT NULL,
+    `UseRestrictedAdmin` tinyint NOT NULL,
+    `UseRCG` tinyint NOT NULL,
+    `InheritUseEnhancedMode` tinyint DEFAULT NULL,
+    `InheritUseVmId` tinyint DEFAULT NULL,
+    `InheritUserField` tinyint NOT NULL,
+    `InheritUsername` tinyint NOT NULL,
+    `InheritVNCAuthMode` tinyint NOT NULL,
+    `InheritVNCColors` tinyint NOT NULL,
+    `InheritVNCCompression` tinyint NOT NULL,
+    `InheritVNCEncoding` tinyint NOT NULL,
+    `InheritVNCProxyIP` tinyint NOT NULL,
+    `InheritVNCProxyPassword` tinyint NOT NULL,
+    `InheritVNCProxyPort` tinyint NOT NULL,
+    `InheritVNCProxyType` tinyint NOT NULL,
+    `InheritVNCProxyUsername` tinyint NOT NULL,
+    `InheritVNCSmartSizeMode` tinyint NOT NULL,
+    `InheritVNCViewOnly` tinyint NOT NULL,
+    `InheritVmId` tinyint NOT NULL,
     `StartProgram` varchar(512) DEFAULT NULL,
     `StartProgramWorkDir` varchar(512) DEFAULT NULL,
     `EC2Region` varchar(32) DEFAULT NULL,
     `EC2InstanceId` varchar(32) DEFAULT NULL,
     `ExternalCredentialProvider` varchar(256) DEFAULT NULL,
     `ExternalAddressProvider` varchar(256) DEFAULT NULL,
+    `UserViaAPI` varchar(512) NOT NULL,
     PRIMARY KEY (`ConstantID`),
     UNIQUE KEY `ID_UNIQUE` (`ID`),
     UNIQUE KEY `ConstantID_UNIQUE` (`ConstantID`)
@@ -526,7 +545,7 @@ DROP TABLE IF EXISTS `tblRoot`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tblRoot` (
     `Name` varchar(2048) NOT NULL,
-    `Export` tinyint(1) NOT NULL,
+    `Export` tinyint NOT NULL,
     `Protected` varchar(4048) NOT NULL,
     `ConfVersion` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -567,7 +586,3 @@ CREATE TABLE `tblUpdate` (
         
     }
 }
-
-//// MySql.Data.MySqlClient.MySqlException: 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(`ConstantID`),
-//UNIQUE(`ID`)
-//    ) ENGINE = InnoDB AUTO_INCREMENT = 3324 DEFAULT ' at line 156'

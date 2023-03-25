@@ -5,7 +5,6 @@ using System.Threading;
 using System.Windows.Forms;
 using mRemoteNG.UI.Tabs;
 using System.Runtime.Versioning;
-using mRemoteNG.UI.Forms;
 
 // ReSharper disable UnusedMember.Local
 
@@ -63,7 +62,7 @@ namespace mRemoteNG.Connection.Protocol
 
         public ConnectionInfo.Force Force { get; set; }
 
-        public readonly System.Timers.Timer tmrReconnect = new System.Timers.Timer(5000);
+        protected readonly System.Timers.Timer tmrReconnect = new System.Timers.Timer(5000);
         protected ReconnectGroup ReconnectGroup;
 
         protected ProtocolBase(string name)
@@ -93,15 +92,15 @@ namespace mRemoteNG.Connection.Protocol
             }
         }
 
-        public virtual void ResizeBegin(object sender, EventArgs e)
+        protected virtual void ResizeBegin(object sender, EventArgs e)
         {
         }
 
-        public virtual void Resize(object sender, EventArgs e)
+        protected virtual void Resize(object sender, EventArgs e)
         {
         }
 
-        public virtual void ResizeEnd(object sender, EventArgs e)
+        protected virtual void ResizeEnd(object sender, EventArgs e)
         {
         }
 
@@ -203,6 +202,10 @@ namespace mRemoteNG.Connection.Protocol
 
         private void DisposeInterface()
         {
+            if (_interfaceControl.IsDisposed)
+            {
+                return;
+            }
             if (_interfaceControl.InvokeRequired)
             {
                 var s = new DisposeInterfaceCB(DisposeInterface);
@@ -218,6 +221,10 @@ namespace mRemoteNG.Connection.Protocol
 
         private void SetTagToNothing()
         {
+            if (!_interfaceControl.IsAccessible || _interfaceControl.IsDisposed ||
+                !_interfaceControl.Parent.IsAccessible || _interfaceControl.Parent.IsDisposed)
+            { return; }
+
             if (_interfaceControl.Parent.InvokeRequired)
             {
                 var s = new SetTagToNothingCB(SetTagToNothing);
@@ -234,10 +241,7 @@ namespace mRemoteNG.Connection.Protocol
         private void DisposeControl()
         {
             // do not attempt to dispose the control if the control is already closed, closing or disposed
-            if (Control == null || !Control.IsAccessible || Control.IsDisposed)
-            {
-                return;
-            }
+            if (Control == null || !Control.IsAccessible || Control.IsDisposed) { return; }
 
             if (Control.InvokeRequired)
             {
