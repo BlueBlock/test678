@@ -8,7 +8,7 @@
 Write-Output ""
 Write-Output "    /===== Begin $($PSCmdlet.MyInvocation.MyCommand) =====/"
 
-$targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG.exe"
+$targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\Release\mRemoteNG.exe"
 #$fileversion = &"$SolutionDir\Tools\exes\sigcheck.exe" /accepteula -q -n $targetVersionedFile
 #$prodversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property ProductVersion)."ProductVersion"
 $fileversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property FileVersion)."FileVersion"
@@ -28,7 +28,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 
 $srcMsi = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"
 #$dstMsi = $SolutionDir + "Release\mRemoteNG-Installer-" + $msiversion + ".msi"
-$dstMsi = $SolutionDir + "mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG-Installer-" + $msiversion + ".msi"
+$dstMsi = $SolutionDir + "mRemoteNG\bin\x64\Release\mRemoteNG-Installer-" + $msiversion + ".msi"
 #$srcSymbols = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer-Symbols*.zip"
 #$dstSymbols = $SolutionDir + "Release\mRemoteNG-Installer-Symbols-" + $msiversion + ".zip"
 
