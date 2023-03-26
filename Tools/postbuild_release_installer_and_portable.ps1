@@ -44,8 +44,8 @@ Format-Table -AutoSize -Wrap -InputObject @{
 $dstPath = "$($SolutionDir)Release"
 New-Item -Path $dstPath -ItemType Directory -Force
 
-$RunInstaller = ($TargetDir -match "\mRemoteNGInstaller\Installer\bin\")
-$RunPortable = ( (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release") -and -not ($TargetDir -match "\mRemoteNGInstaller\Installer\bin\") )
+$RunInstaller = $TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\"
+$RunPortable = ( ($Targetdir -match "\\mRemoteNG\\bin\\") -and -not ($TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\") )
 
 write-host "ConfigurationName: $ConfigurationName"
 
