@@ -54,6 +54,7 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 }
 
 
+$env:postbuild_installer_executed -ne "true"
 if (!([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER))) {
     New-Item -Path 'HKLM:\Software\AppVeyor_mRemoteNG' -Force;
     Get-Item -Path 'HKLM:\Software\AppVeyor_mRemoteNG' | New-Item -Name 'postbuild_installer_executed' -Force;
