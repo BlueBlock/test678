@@ -55,6 +55,8 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 
 $env:postbuild_installer_executed="true"
 [Environment]::SetEnvironmentVariable("postbuild_installer_executed", "true", [System.EnvironmentVariableTarget]::Machine)
+[Environment]::SetEnvironmentVariable("postbuild_installer_executed", "true", [System.EnvironmentVariableTarget]::Session)
+[Environment]::SetEnvironmentVariable("postbuild_installer_executed", "true", [System.EnvironmentVariableTarget]::User)
 
 Write-Output "End mRemoteNG Installer Post Build"
 Write-Output ""
