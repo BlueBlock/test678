@@ -62,7 +62,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
 
-envvars = Get-Content ".\envvars.json" | ConvertFrom-Json
+$envvars = Get-Content ".\envvars.json" | ConvertFrom-Json
 [Environment]::SetEnvironmentVariable("postbuild_installer_executed", "$envvars.postbuild_installer_executed", "Machine")
 
 

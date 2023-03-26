@@ -57,7 +57,7 @@ $env:postbuild_installer_executed="true"
 $envvars = @{
     "postbuild_installer_executed" = $env:postbuild_installer_executed
 }
-$envvars  | ConvertTo-Json | Set-Content .\envvars.json
+$envvars | ConvertTo-Json | Set-Content .\envvars.json
 
 
 Write-Output "End mRemoteNG Installer Post Build"
