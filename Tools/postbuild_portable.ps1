@@ -62,6 +62,9 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
 
+postbuild_installer_executed
+$env:postbuild_installer_executed
+
 if ($env:postbuild_installer_executed -ne "true") {
 
     & "$PSScriptRoot\sign_binaries.ps1" -TargetDir $TargetDir -CertificatePath $CertificatePath -CertificatePassword $CertificatePassword -ConfigurationName $ConfigurationName -Exclude $ExcludeFromSigning -SolutionDir $SolutionDir
