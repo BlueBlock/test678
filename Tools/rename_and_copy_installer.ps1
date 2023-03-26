@@ -27,12 +27,12 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 }
 
 $dstPath = $SolutionDir + "Release"
+New-Item -Path $dstPath -ItemType Directory -Force
+
 $srcMsi = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"
 $dstMsi = $dstPath + "\mRemoteNG-Installer-" + $msiversion + ".msi"
 #$srcSymbols = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer-Symbols*.zip"
 #$dstSymbols = $SolutionDir + "Release\mRemoteNG-Installer-Symbols-" + $msiversion + ".zip"
-
-New-Item -Path $dstPath -ItemType Directory -Force
 
 Write-Output "        Copy Installer file:"
 Write-Output "          From: $srcMsi"
