@@ -27,6 +27,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 }
 
 $dstPath = $SolutionDir + "Release"
+write-host $dstPath
 New-Item -Path $dstPath -ItemType Directory -Force
 
 $srcMsi = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"

@@ -9,7 +9,7 @@ if ($IsAppVeyor) {
     Install-Module -Name PowerShellForGitHub -Scope CurrentUser
     Set-GitHubConfiguration -DisableTelemetry
     $PSDefaultParameterValues["*-GitHub*:AccessToken"] = "$env:ACCESS_TOKEN"
-    New-Item -Path "$Env:APPVEYOR_BUILD_FOLDER)\Release" -ItemType Directory -Force
+    #New-Item -Path "$Env:APPVEYOR_BUILD_FOLDER\Release" -ItemType Directory -Force
 }
 
 Function ConvertFrom-Base64($base64) {
