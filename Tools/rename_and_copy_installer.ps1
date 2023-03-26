@@ -31,6 +31,8 @@ $dstMsi = $SolutionDir + "Release\mRemoteNG-Installer-" + $msiversion + ".msi"
 #$srcSymbols = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer-Symbols*.zip"
 #$dstSymbols = $SolutionDir + "Release\mRemoteNG-Installer-Symbols-" + $msiversion + ".zip"
 
+New-Item -Path $SolutionDir + "Release\" -ItemType Directory -Force
+
 Write-Output "        Copy Installer file:"
 Write-Output "          From: $srcMsi"
 Write-Output "            To: $dstMsi"
