@@ -60,7 +60,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
 #& "$PSScriptRoot\set_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
 #& "$PSScriptRoot\verify_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
 
-$postbuild_installer_executed = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\mRemoteNG' -Name postbuild_installer_executed
+$postbuild_installer_executed = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\AppVeyor_mRemoteNG' -Name postbuild_installer_executed
 write-host "var postbuild_installer_executed: $postbuild_installer_executed"
 
 & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName

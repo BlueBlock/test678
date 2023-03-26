@@ -54,20 +54,11 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 }
 
 
-#New-Item -Path 'HKLM:\Software\mRemoteNG' -Force
-#Get-Item -Path 'HKLM:\Software\mRemoteNG' | New-Item -Name 'postbuild_installer_executed' -Force
-#New-ItemProperty -Path 'HKLM:\Software\mRemoteNG' -Name 'postbuild_installer_executed' -Value "true" -Force
-
-
-
-
-
-
-# $envvars = @{
-#     "postbuild_installer_executed" = $env:postbuild_installer_executed
-# }
-# $envvars | ConvertTo-Json | Set-Content c:\envvars.json
-
+if (!([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER))) {
+    New-Item -Path 'HKLM:\Software\AppVeyor_mRemoteNG' -Force;
+    Get-Item -Path 'HKLM:\Software\AppVeyor_mRemoteNG' | New-Item -Name 'postbuild_installer_executed' -Force;
+    New-ItemProperty -Path 'HKLM:\Software\AppVeyor_mRemoteNG' -Name 'postbuild_installer_executed' -Value "false" -Force
+}
 
 Write-Output "End mRemoteNG Installer Post Build"
 Write-Output ""
