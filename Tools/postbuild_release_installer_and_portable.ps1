@@ -28,8 +28,8 @@ param (
 . "$PSScriptRoot\github_functions.ps1"
 
 write-host "ConfigurationName: $ConfigurationName"
-write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\bin")
-write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\Release\bin")
+write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\bin\x64\Release")
+write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\bin\x64\Release")
 
 if ($ConfigurationName -eq "Release Installer") {
 
