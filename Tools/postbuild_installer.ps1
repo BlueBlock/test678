@@ -54,10 +54,11 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 }
 
 $env:postbuild_installer_executed="true"
-$envvars = @{
-    "postbuild_installer_executed" = $env:postbuild_installer_executed
-}
-$envvars | ConvertTo-Json | Set-Content c:\envvars.json
+$postbuild_installer_executed="true1"
+# $envvars = @{
+#     "postbuild_installer_executed" = $env:postbuild_installer_executed
+# }
+# $envvars | ConvertTo-Json | Set-Content c:\envvars.json
 
 
 Write-Output "End mRemoteNG Installer Post Build"
