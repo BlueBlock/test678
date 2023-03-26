@@ -28,14 +28,17 @@ param (
 . "$PSScriptRoot\github_functions.ps1"
 
 write-host "ConfigurationName: $ConfigurationName"
+write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\bin")
+write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\Release\bin")
+
 if ($ConfigurationName -eq "Release Installer") {
 
 }
 
-# Write-Output ""
-# Write-Output "+===========================================================================================+"
-# Write-Output "|             Beginning mRemoteNG Release Installer and Portable Post Build                 |"
-# Write-Output "+===========================================================================================+"
+Write-Output ""
+Write-Output "+===========================================================================================+"
+Write-Output "|             Beginning mRemoteNG Release Installer and Portable Post Build                 |"
+Write-Output "+===========================================================================================+"
 # Format-Table -AutoSize -Wrap -InputObject @{
 #     "SolutionDir" = $SolutionDir
 #     "TargetDir" = $TargetDir
