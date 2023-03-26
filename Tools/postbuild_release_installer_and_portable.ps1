@@ -54,7 +54,7 @@ $RunPortable = ( (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release") -a
 write-host "RunInstaller: $RunInstaller"
 write-host "RunPortable: $RunPortable"
 
-if (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release") {
+if ($RunInstaller) {
 
     Write-Output "-Begin Release Installer"
 
@@ -74,7 +74,7 @@ if (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release
     Write-Output "-End Release Installer"
 }
 
-if () {
+if ($RunPortable) {
 
     Write-Output "-Begin Release Portable"
 
