@@ -42,6 +42,7 @@ Write-Output ""
 # Copy file
 try
 {
+    Copy-Item $srcMsi -Destination $dstMsi -Force
     #Copy-Item $srcMsi -Destination $dstMsi -Force -ErrorAction Stop
     #Copy-Item $srcSymbols -Destination $dstSymbols -Force -ErrorAction Stop
     Write-Host "        [Success!]" -ForegroundColor green
