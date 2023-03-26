@@ -66,6 +66,8 @@ if (!([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER))) {
     $postbuild_installer_executed = ""
 }
 
+write-host "-SolutionDir $SolutionDir -TargetDir $TargetDir -ConfigurationName $ConfigurationName "
+
 & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
 
 if ($postbuild_installer_executed -ne "true" -or $env:postbuild_installer_executed -ne "true") {
