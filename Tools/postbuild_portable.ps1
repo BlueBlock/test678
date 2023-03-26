@@ -60,15 +60,12 @@ Format-Table -AutoSize -Wrap -InputObject @{
 #& "$PSScriptRoot\set_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
 #& "$PSScriptRoot\verify_LargeAddressAware.ps1" -TargetDir $TargetDir -TargetFileName $TargetFileName
 
-& "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
-
-# $envvars = Get-Content "c:\envvars.json" | ConvertFrom-Json
-# [Environment]::SetEnvironmentVariable("postbuild_installer_executed", "$envvars.postbuild_installer_executed", "Machine")
-
-write-host "postbuild_installer_executed: $env:postbuild_installer_executed"
+$postbuild_installer_executed = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\mRemoteNG' -Name postbuild_installer_executed
 write-host "var postbuild_installer_executed: $postbuild_installer_executed"
 
-if ($env:postbuild_installer_executed -ne "true") {
+& "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
+
+if ($postbuild_installer_executed -ne "true") {
 
     & "$PSScriptRoot\sign_binaries.ps1" -TargetDir $TargetDir -CertificatePath $CertificatePath -CertificatePassword $CertificatePassword -ConfigurationName $ConfigurationName -Exclude $ExcludeFromSigning -SolutionDir $SolutionDir
 
