@@ -6,7 +6,7 @@
 )
 
 Write-Output ""
-Write-Output "    /===== Begin $($PSCmdlet.MyInvocation.MyCommand) =====/"
+Write-Output "    /===== Begin rename_and_copy_installer =====/"
 
 $targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\Release\mRemoteNG.exe"
 #$fileversion = &"$SolutionDir\Tools\exes\sigcheck.exe" /accepteula -q -n $targetVersionedFile
@@ -28,7 +28,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 
 $dstPath = $SolutionDir + "Release"
 write-host $dstPath
-New-Item -Path $dstPath -ItemType Directory -Force
+#New-Item -Path $dstPath -ItemType Directory -Force
 
 $srcMsi = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"
 $dstMsi = $dstPath + "\mRemoteNG-Installer-" + $msiversion + ".msi"
@@ -52,5 +52,5 @@ catch
 #Copy-Item $srcSymbols -Destination $dstSymbols -Force
 
 Write-Output ""
-Write-Output "    /===== End $($PSCmdlet.MyInvocation.MyCommand) =====/"
+Write-Output "    /===== End rename_and_copy_installer.ps1 =====/"
 Write-Output ""
