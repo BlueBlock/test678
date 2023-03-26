@@ -44,7 +44,7 @@ if($IsAppVeyor) {
 }
 
 # Package debug symbols zip file
-if ($ConfigurationName -match "Release") {
+if ($ConfigurationName -eq "Release Installer and Portable") {
 
     Write-Output "Packaging debug symbols"
 
@@ -76,7 +76,7 @@ if ($ConfigurationName -match "Release") {
 }
 
 # Package portable release zip file
-if ($ConfigurationName -eq "Release Portable") {
+if ($ConfigurationName -eq "Release Installer and Portable") {
     Write-Output "Packaging portable ZIP file"
 
     # AppVeyor build
