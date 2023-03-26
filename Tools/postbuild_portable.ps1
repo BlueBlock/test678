@@ -62,8 +62,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
 
-write-host "postbuild_installer_executed"
-write-host $env:postbuild_installer_executed
+write-host "postbuild_installer_executed: $env:postbuild_installer_executed"
 
 if ($env:postbuild_installer_executed -ne "true") {
 
