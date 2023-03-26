@@ -53,8 +53,22 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
     & "$PSScriptRoot\update_and_upload_website_release_json_file.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
 }
 
+Set-Location -Path 'HKLM:\Software\mRemoteNG'
+Get-Item -Path 'HKLM:\Software\mRemoteNG' | New-Item -Name 'postbuild_installer_executed' -Force
+New-ItemProperty -Path 'HKLM:\Software\mRemoteNG' -Name 'postbuild_installer_executed' -Value "true1" -PropertyType DWORD -Force
+
+Set-ItemProperty -Path HKCU:\Software\mRemoteNG -Name postbuild_installer_executed2 -Value "true2" -Force
+Set-ItemProperty -Path HKLM:\Software\mRemoteNG -Name postbuild_installer_executed3 -Value "true3" -Force
+
+write-host "HKCU"
+Get-ItemPropertyValue -Path 'HKCU:\SOFTWARE\mRemoteNG' -Name postbuild_installer_executed2
+write-host "HKLM"
+Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\mRemoteNG' -Name postbuild_installer_executed3
+
+
+
 $env:postbuild_installer_executed="true"
-$postbuild_installer_executed="true1"
+$postbuild_installer_executed="true0"
 # $envvars = @{
 #     "postbuild_installer_executed" = $env:postbuild_installer_executed
 # }
