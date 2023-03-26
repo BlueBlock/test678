@@ -54,11 +54,11 @@ if ( ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullO
 }
 
 $env:postbuild_installer_executed="true"
-[Environment]::SetEnvironmentVariable("postbuild_installer_executed", "true", [System.EnvironmentVariableTarget]::Machine)
-[Environment]::SetEnvironmentVariable("postbuild_installer_executed", "true", [System.EnvironmentVariableTarget]::Session)
-[Environment]::SetEnvironmentVariable("postbuild_installer_executed", "true", [System.EnvironmentVariableTarget]::User)
+$envvars = @{
+    "postbuild_installer_executed" = $env:postbuild_installer_executed
+}
+$envvars  | ConvertTo-Json | Set-Content .\envvars.json
 
-Set-Item -Path Env:postbuild_installer_executed -Value ($Env:postbuild_installer_executed + ";true2")
 
 Write-Output "End mRemoteNG Installer Post Build"
 Write-Output ""
