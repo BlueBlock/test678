@@ -28,7 +28,6 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 
 $dstPath = $SolutionDir + "Release"
 write-host $dstPath
-New-Item -Path $dstPath -ItemType Directory -Force
 
 $srcMsi = $SolutionDir + "mRemoteNGInstaller\Installer\bin\x64\$BuildConfiguration\en-US\mRemoteNG-Installer.msi"
 $dstMsi = $dstPath + "\mRemoteNG-Installer-" + $msiversion + ".msi"
@@ -42,7 +41,8 @@ Write-Output ""
 # Copy file
 try
 {
-    Copy-Item $srcMsi -Destination $dstMsi -Force
+    New-Item -Path $dstPath -ItemType Directory -Force
+    Copy-Item -Path $srcMsi -Destination $dstMsi -Force
     #Copy-Item $srcMsi -Destination $dstMsi -Force -ErrorAction Stop
     #Copy-Item $srcSymbols -Destination $dstSymbols -Force -ErrorAction Stop
     Write-Host "        [Success!]" -ForegroundColor green
