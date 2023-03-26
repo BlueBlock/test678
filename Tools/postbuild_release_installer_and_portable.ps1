@@ -41,18 +41,18 @@ Format-Table -AutoSize -Wrap -InputObject @{
 }
 
 
-write-host "ConfigurationName: $ConfigurationName"
-write-host (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release")
-write-host (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release")
-
 $dstPath = "$($SolutionDir)Release"
 New-Item -Path $dstPath -ItemType Directory -Force
 
-$RunInstaller = ( (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release") -and (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release") )
-$RunPortable = ( (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release") -and -not (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release") )
+$RunInstaller = ($TargetDir -match "\mRemoteNGInstaller\Installer\bin\")
+$RunPortable = ( (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release") -and -not ($TargetDir -match "\mRemoteNGInstaller\Installer\bin\") )
+
+write-host "ConfigurationName: $ConfigurationName"
 
 write-host "RunInstaller: $RunInstaller"
+write-host (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release")
 write-host "RunPortable: $RunPortable"
+write-host (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release")
 
 if ($RunInstaller) {
 
