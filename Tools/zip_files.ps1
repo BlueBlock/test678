@@ -44,57 +44,45 @@ if($IsAppVeyor) {
 }
 
 # Package debug symbols zip file
-if ($ConfigurationName -eq "Release Installer and Portable") {
-
-    Write-Output "Packaging debug symbols"
-
-    if ($ConfigurationName -match "Portable") {
-        $zipFilePrefix = "mRemoteNG-Portable-symbols"
-    } else {
-        $zipFilePrefix = "mRemoteNG-Installer-symbols"
-    }
-
-    $debugFile = Join-Path -Path $TargetDir -ChildPath "mRemoteNG.pdb"
-
-    # AppVeyor build
-    if ($IsAppVeyor) {
-        $outputZipPath = Join-Path -Path $SolutionDir -ChildPath "Release\$zipFilePrefix-$($ModifiedVersion).zip"
-        7z a $outputZipPath $debugFile
-    }
-    # Local build
-    else {
-		if (!(Test-Path -Path $debugFile -PathType Leaf))
-		{
-			$outputZipPath = "$($SolutionDir)Release\$zipFilePrefix-$($ModifiedVersion).zip"
-			Compress-Archive $debugFile $outputZipPath -Force
-		} else {
-			Write-Output "File do not exist:" $debugFile", nothing to compress"
-		}
-    }
-
-    Remove-Item $debugFile
+Write-Output "Packaging debug symbols"
+$zipFilePrefix = "mRemoteNG-symbols"
+$debugFile = Join-Path -Path $TargetDir -ChildPath "mRemoteNG.pdb"
+# AppVeyor build
+if ($IsAppVeyor) {
+    $outputZipPath = Join-Path -Path $SolutionDir -ChildPath "Release\$zipFilePrefix-$($ModifiedVersion).zip"
+    7z a $outputZipPath $debugFile
 }
+# Local build
+else {
+    if (!(Test-Path -Path $debugFile -PathType Leaf))
+    {
+        $outputZipPath = "$($SolutionDir)Release\$zipFilePrefix-$($ModifiedVersion).zip"
+        Compress-Archive $debugFile $outputZipPath -Force
+    } else {
+        Write-Output "File do not exist:" $debugFile", nothing to compress"
+    }
+}
+Remove-Item $debugFile
+
 
 # Package portable release zip file
-if ($ConfigurationName -eq "Release Installer and Portable") {
-    Write-Output "Packaging portable ZIP file"
-
-    # AppVeyor build
-    if ($IsAppVeyor) {
-        $outputZipPath = Join-Path -Path $SolutionDir -ChildPath "Release\mRemoteNG-Portable-$($ModifiedVersion).zip"
-        7z a -bt -bd -bb1 -mx=9 -tzip -y -r $outputZipPath $TargetDir\*
-    }
-    # Local build
-    else {
-		if ($Source)
-		{
-			$outputZipPath="$($SolutionDir)\Release\mRemoteNG-Portable-$($ModifiedVersion).zip"
-			Compress-Archive $Source $outputZipPath -Force
-		} else {
-			Write-Output "File do not exist:" $Source", nothing to compress"
-		}
+Write-Output "Packaging portable ZIP file"
+# AppVeyor build
+if ($IsAppVeyor) {
+    $outputZipPath = Join-Path -Path $SolutionDir -ChildPath "Release\mRemoteNG-Portable-$($ModifiedVersion).zip"
+    7z a -bt -bd -bb1 -mx=9 -tzip -y -r $outputZipPath $TargetDir\*
+}
+# Local build
+else {
+    if ($Source)
+    {
+        $outputZipPath="$($SolutionDir)\Release\mRemoteNG-Portable-$($ModifiedVersion).zip"
+        Compress-Archive $Source $outputZipPath -Force
+    } else {
+        Write-Output "File do not exist:" $Source", nothing to compress"
     }
 }
+
 
 Write-Output "End $($PSCmdlet.MyInvocation.MyCommand)"
 Write-Output ""
