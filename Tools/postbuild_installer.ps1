@@ -58,7 +58,7 @@ $env:postbuild_installer_executed -ne "true"
 if (!([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER))) {
     New-Item -Path 'HKLM:\Software\AppVeyor_mRemoteNG' -Force;
     Get-Item -Path 'HKLM:\Software\AppVeyor_mRemoteNG' | New-Item -Name 'postbuild_installer_executed' -Force;
-    New-ItemProperty -Path 'HKLM:\Software\AppVeyor_mRemoteNG' -Name 'postbuild_installer_executed' -Value "false" -Force
+    New-ItemProperty -Path 'HKLM:\Software\AppVeyor_mRemoteNG' -Name 'postbuild_installer_executed' -Value "true" -Force
 }
 
 Write-Output "End mRemoteNG Installer Post Build"
