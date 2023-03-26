@@ -100,8 +100,7 @@
     <OutputPath>bin\x64\$(Platform)\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-:: When passing paths to powershell scripts, check if the path ends with a backslash "\"
+    <PostBuildEvent>:: When passing paths to powershell scripts, check if the path ends with a backslash "\"
 :: If it does, then the backslash may be interpreted as an escape character. Add another backslash to cancel the first one.
 
 powershell -noprofile -command "sleep 2"
@@ -113,8 +112,7 @@ set /p buildenv=&lt;buildenv.tmp
 
 :: Call the post build powershell script
 echo powershell.exe -ExecutionPolicy Bypass -File "$(SolutionDir)Tools\postbuild_installer.ps1" -SolutionDir "$(SolutionDir)\" -TargetDir "%25cd%25" -TargetFileName "mRemoteNG.exe" -ConfigurationName "%25buildenv%25" -CertificatePath "$(CertPath)" -CertificatePassword "" -ExcludeFromSigning "PuTTYNG.exe"
-powershell.exe -ExecutionPolicy Bypass -File "$(SolutionDir)Tools\postbuild_installer.ps1" -SolutionDir "$(SolutionDir)\" -TargetDir "%25cd%25" -TargetFileName "mRemoteNG.exe" -ConfigurationName "%25buildenv%25" -CertificatePath "$(CertPath)" -CertificatePassword "$(CertPassword)" -ExcludeFromSigning "PuTTYNG.exe"
-    </PostBuildEvent>
+powershell.exe -ExecutionPolicy Bypass -File "$(SolutionDir)Tools\postbuild_installer.ps1" -SolutionDir "$(SolutionDir)\" -TargetDir "%25cd%25" -TargetFileName "mRemoteNG.exe" -ConfigurationName "%25buildenv%25" -CertificatePath "$(CertPath)" -CertificatePassword "$(CertPassword)" -ExcludeFromSigning "PuTTYNG.exe"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <Cultures>en-US</Cultures>
@@ -187,14 +185,13 @@ powershell.exe -ExecutionPolicy Bypass -File "$(SolutionDir)Tools\postbuild_inst
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-REM Clean the TargetDir
+    <PreBuildEvent>REM Clean the TargetDir
 rmdir /S /Q "$(TargetDir)"
 
 echo $(ConfigurationName) &gt; buildenv.tmp
+setx buildenv $(ConfigurationName)
 
 REM Harvest bin directory of the mRemoteNG project
-"$(WIX)bin\heat.exe" dir "$(SolutionDir)mRemoteNG\bin\x64\$(Configuration)" -ag -nologo -dr INSTALLDIR -var var.HarvestPath -srd -scom -sreg -cg MandatoryComponents -template fragment -out "$(ProjectDir)Fragments\FilesFragment.wxs" -t "$(ProjectDir)Filters\Harvest_Filter.xslt"
-    </PreBuildEvent>
+"$(WIX)bin\heat.exe" dir "$(SolutionDir)mRemoteNG\bin\x64\$(Configuration)" -ag -nologo -dr INSTALLDIR -var var.HarvestPath -srd -scom -sreg -cg MandatoryComponents -template fragment -out "$(ProjectDir)Fragments\FilesFragment.wxs" -t "$(ProjectDir)Filters\Harvest_Filter.xslt"</PreBuildEvent>
   </PropertyGroup>
 </Project>
