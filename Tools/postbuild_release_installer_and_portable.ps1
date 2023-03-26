@@ -42,10 +42,13 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 
 write-host "ConfigurationName: $ConfigurationName"
-write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\bin\x64\Release")
-write-host (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\bin\x64\Release")
+write-host (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release")
+write-host (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release")
 
-if (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\bin\x64\Release") {
+$dstPath = "$($SolutionDir)Release"
+New-Item -Path $dstPath -ItemType Directory -Force
+
+if (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release") {
 
     Write-Output "-Begin Release Installer"
 
