@@ -48,6 +48,12 @@ write-host (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release")
 $dstPath = "$($SolutionDir)Release"
 New-Item -Path $dstPath -ItemType Directory -Force
 
+$RunInstaller = ( (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release") -and (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\bin\x64\Release") )
+$RunPortable = ( (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\bin\x64\Release") -and -not (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\bin\x64\Release") )
+
+write-host "RunInstaller: $RunInstaller"
+write-host "RunPortable: $RunPortable"
+
 if (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release") {
 
     Write-Output "-Begin Release Installer"
@@ -68,7 +74,7 @@ if (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64\Release
     Write-Output "-End Release Installer"
 }
 
-if (Test-Path -Path "C:\projects\mremoteng-nb7nb\mRemoteNG\bin\x64\Release") {
+if () {
 
     Write-Output "-Begin Release Portable"
 
