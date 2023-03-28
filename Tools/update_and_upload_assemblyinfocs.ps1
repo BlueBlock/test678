@@ -37,7 +37,7 @@ if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
     Write-Output (Test-Path -Path "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs")
     Write-Output "publish AssemblyInfo.cs"
 
-    if (Test-Path -Path "..\mRemoteNG\Properties\AssemblyInfo.cs") {
+    if (Test-Path -Path "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs") {
         $assemblyinfocs_content = Get-Content "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs"
         $assemblyinfocs_content = "Testing"
         
