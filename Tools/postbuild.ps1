@@ -54,6 +54,8 @@ write-host (Test-Path -Path "$($SolutionDir)mRemoteNGInstaller\Installer\bin\x64
 write-host "RunPortable: $RunPortable"
 write-host (Test-Path -Path "$($SolutionDir)mRemoteNG\bin\x64\Release")
 
+write-host "ConfigurationName: $ConfigurationName"
+
 if ($RunInstaller) {
 
     Write-Output "-Begin Release Installer"
