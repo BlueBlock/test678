@@ -31,6 +31,9 @@ if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
     
     # commit AssemblyInfo.cs change
     Write-Output "publish AssemblyInfo.cs"
+    Write-Output (Test-Path -Path "mRemoteNG\Properties\AssemblyInfo.cs")
+    Write-Output "publish AssemblyInfo.cs"
+    
     if (Test-Path -Path "mRemoteNG\Properties\AssemblyInfo.cs") {
         $assemblyinfocs_content = Get-Content "mRemoteNG\Properties\AssemblyInfo.cs"
         $assemblyinfocs_content = "Testing"
