@@ -49,15 +49,7 @@ New-Item -Path $dstPath -ItemType Directory -Force
 # $RunInstaller = $TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\"
 # $RunPortable = ( ($Targetdir -match "\\mRemoteNG\\bin\\") -and -not ($TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\") )
 
-if ( ($env:IS_CI_BUILD).ToUpper() -eq "TRUE" ) {
-
-    Write-Output "-Begin Release CI"
-
-    & "$PSScriptRoot\postbuild_installer.ps1" -SolutionDir "$(SolutionDir)\" -TargetDir "$(TargetDir)\" -TargetFileName "mRemoteNG.exe" -ConfigurationName "$(ConfigurationName)" -CertificatePath "$(CertPath)" -CertificatePassword "$(CertPassword)" -ExcludeFromSigning "PuTTYNG.exe"
-
-    Write-Output "-End Release CI"
-
-} else {
+if ( ($env:IS_CI_BUILD).ToUpper() -ne "TRUE" ) {
 
     Write-Output "-Begin Release Portable"
 
