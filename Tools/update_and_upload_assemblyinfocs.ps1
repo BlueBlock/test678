@@ -22,7 +22,7 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
-#$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\mRemoteNG\bin\x64\Release" -Resolve -ErrorAction Ignore
+$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\" -Resolve -ErrorAction Ignore
 #$ReleaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
 
 if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
@@ -31,14 +31,14 @@ if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
     
     # commit AssemblyInfo.cs change
     Write-Output "publish AssemblyInfo.cs"
-    Write-Output (Get-Location).ToString()
-    Write-Output (Test-Path -Path "..\mRemoteNG")
-    Write-Output (Test-Path -Path "..\mRemoteNG\Properties")
-    Write-Output (Test-Path -Path "..\mRemoteNG\Properties\AssemblyInfo.cs")
+    Write-Output $buildFolder
+    Write-Output (Test-Path -Path "$buildFolder\mRemoteNG")
+    Write-Output (Test-Path -Path "$buildFolder\mRemoteNG\Properties")
+    Write-Output (Test-Path -Path "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs")
     Write-Output "publish AssemblyInfo.cs"
 
     if (Test-Path -Path "..\mRemoteNG\Properties\AssemblyInfo.cs") {
-        $assemblyinfocs_content = Get-Content "..\mRemoteNG\Properties\AssemblyInfo.cs"
+        $assemblyinfocs_content = Get-Content "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs"
         $assemblyinfocs_content = "Testing"
         
         #Set-GitHubContent -OwnerName $MainRepository -RepositoryName $MainRepository -Path "mRemoteNG\Properties\AssemblyInfo.cs" -CommitMessage "AssemblyInfo.cs updated for $UpdateChannel $ModifiedTagName" -Content $assemblyinfocs_content -BranchName main
