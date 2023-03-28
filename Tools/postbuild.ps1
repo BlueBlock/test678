@@ -30,6 +30,7 @@ param (
 Write-Output ""
 Write-Output "+===========================================================================================+"
 Write-Output "|             Beginning mRemoteNG Release Installer and Portable Post Build                 |"
+Write-Output "|             Beginning mRemoteNG Post Build                 |"
 Write-Output "+===========================================================================================+"
 Format-Table -AutoSize -Wrap -InputObject @{
     "SolutionDir" = $SolutionDir
@@ -132,4 +133,5 @@ if ($RunPortable) {
 
 
 Write-Output "End mRemoteNG Release Installer and Portable Post Build"
+Write-Output "End mRemoteNG Post Build"
 Write-Output ""
