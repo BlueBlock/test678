@@ -90,6 +90,8 @@ if ($RunPortable) {
 
         & "$PSScriptRoot\update_and_upload_website_release_json_file.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
     }
+
+    Write-Output "-End Release Portable"
 }
 
 
@@ -126,7 +128,6 @@ if ($RunPortable) {
 
 # }
 
-Write-Output "-End Release Portable"
 
 Write-Output "End mRemoteNG Release Installer and Portable Post Build"
 Write-Output ""
