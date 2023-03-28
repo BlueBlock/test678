@@ -38,7 +38,7 @@ if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
     Write-Output "publish AssemblyInfo.cs"
 
     if (Test-Path -Path "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs") {
-        $assemblyinfocs_content = (Get-Content "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs").ToString()
+        $assemblyinfocs_content = (Get-Content "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs")
         #$assemblyinfocs_content = "Testing"
         
         #Set-GitHubContent -OwnerName $MainRepository -RepositoryName $MainRepository -Path "mRemoteNG\Properties\AssemblyInfo.cs" -CommitMessage "AssemblyInfo.cs updated for $UpdateChannel $ModifiedTagName" -Content $assemblyinfocs_content -BranchName main
