@@ -8,7 +8,7 @@
 Write-Output ""
 Write-Output "    /===== Begin rename_and_copy_installer =====/"
 
-$targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\Release\mRemoteNG.exe"
+$targetVersionedFile = "$SolutionDir\mRemoteNG\bin\x64\$BuildConfiguration\mRemoteNG.exe"
 #$fileversion = &"$SolutionDir\Tools\exes\sigcheck.exe" /accepteula -q -n $targetVersionedFile
 #$prodversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property ProductVersion)."ProductVersion"
 $fileversion = ((Get-Item -Path $targetVersionedFile).VersionInfo | Select-Object -Property FileVersion)."FileVersion"

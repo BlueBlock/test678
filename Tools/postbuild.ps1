@@ -41,13 +41,13 @@ Format-Table -AutoSize -Wrap -InputObject @{
 }
 
 
+if ( $ConfigurationName -eq "Debug" -and ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {return; } #skip when Debug local developer build
+
 $dstPath = "$($SolutionDir)Release"
 New-Item -Path $dstPath -ItemType Directory -Force
 
 # $RunInstaller = $TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\"
 # $RunPortable = ( ($Targetdir -match "\\mRemoteNG\\bin\\") -and -not ($TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\") )
-
-write-host "ConfigurationName: $ConfigurationName"
 
 if ( ($env:IS_CI_BUILD).ToUpper() -eq "TRUE" ) {
 
