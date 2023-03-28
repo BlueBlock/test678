@@ -22,12 +22,13 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
     $UpdateChannel = ""
 }
 
-$buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\" -Resolve -ErrorAction Ignore
-
 if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
     # commit AssemblyInfo.cs change
     Write-Output "publish AssemblyInfo.cs"
-    
+
+    $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\" -Resolve -ErrorAction Ignore
+    Write-Output $buildFolder
+
     if (Test-Path -Path "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs") {
         $assemblyinfocs_content = [System.String]::Join("`r`n", (Get-Content "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs"))
 
