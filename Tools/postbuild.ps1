@@ -49,7 +49,7 @@ New-Item -Path $dstPath -ItemType Directory -Force
 
 write-host "ConfigurationName: $ConfigurationName"
 
-if ( [string]::IsNullOrEmpty($env:IS_CI_BUILD).ToUpper() -eq "TRUE" ) {
+if ( ($env:IS_CI_BUILD).ToUpper() -eq "TRUE" ) {
 
     Write-Output "-Begin Release CI"
 
