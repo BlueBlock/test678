@@ -23,27 +23,15 @@ if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
 }
 
 $buildFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\" -Resolve -ErrorAction Ignore
-#$ReleaseFolder = Join-Path -Path $PSScriptRoot -ChildPath "..\Release" -Resolve
 
 if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
-
-    $published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-    
     # commit AssemblyInfo.cs change
     Write-Output "publish AssemblyInfo.cs"
-    Write-Output $buildFolder
-    Write-Output (Test-Path -Path "$buildFolder\mRemoteNG")
-    Write-Output (Test-Path -Path "$buildFolder\mRemoteNG\Properties")
-    Write-Output (Test-Path -Path "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs")
-    Write-Output "publish AssemblyInfo.cs"
-
+    
     if (Test-Path -Path "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs") {
-        $assemblyinfocs_content = [System.String]::Join("`r`n", (Get-Content "$buildFolder\mRemoteNG\Properties\AssemblyInfo2.txt"))
-        #$assemblyinfocs_content = "Testing"
-        
-        #Set-GitHubContent -OwnerName $MainRepository -RepositoryName $MainRepository -Path "mRemoteNG\Properties\AssemblyInfo.cs" -CommitMessage "AssemblyInfo.cs updated for $UpdateChannel $ModifiedTagName" -Content $assemblyinfocs_content -BranchName main
+        $assemblyinfocs_content = [System.String]::Join("`r`n", (Get-Content "$buildFolder\mRemoteNG\Properties\AssemblyInfo.cs"))
 
-        Set-GitHubContent -OwnerName "BlueBlock" -RepositoryName "test678" -Path "mRemoteNG\Properties\AssemblyInfo2.txt" -CommitMessage "AssemblyInfo.cs updated for  $UpdateChannel $ModifiedTagName" -Content $assemblyinfocs_content -BranchName main
+        Set-GitHubContent -OwnerName $MainRepository -RepositoryName $MainRepository -Path "mRemoteNG\Properties\AssemblyInfo.cs" -CommitMessage "AssemblyInfo.cs updated for  $UpdateChannel $ModifiedTagName" -Content $assemblyinfocs_content -BranchName main
 
         Write-Output "publish completed"
     }
