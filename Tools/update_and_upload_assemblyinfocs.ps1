@@ -43,7 +43,7 @@ if ($UpdateChannel -ne "" -and $MainRepository -ne "" ) {
         
         #Set-GitHubContent -OwnerName $MainRepository -RepositoryName $MainRepository -Path "mRemoteNG\Properties\AssemblyInfo.cs" -CommitMessage "AssemblyInfo.cs updated for $UpdateChannel $ModifiedTagName" -Content $assemblyinfocs_content -BranchName main
 
-        Set-GitHubContent -OwnerName "BlueBlock" -RepositoryName "test678" -Path "mRemoteNG\Properties\AssemblyInfo2.txt" -CommitMessage "AssemblyInfo.cs updated for  $UpdateChannel $ModifiedTagName" -Content [System.String]::Join("`r`n", $assemblyinfocs_content) -BranchName main
+        Set-GitHubContent -OwnerName "BlueBlock" -RepositoryName "test678" -Path "mRemoteNG\Properties\AssemblyInfo2.txt" -CommitMessage "AssemblyInfo.cs updated for  $UpdateChannel $ModifiedTagName" -Content [System.String]::Join("`r`n", $assemblyinfocs_content).ToString() -BranchName main
 
         Write-Output "publish completed"
     }
