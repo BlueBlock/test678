@@ -177,7 +177,8 @@ REM Harvest bin directory of the mRemoteNG project
 "$(WIX)bin\heat.exe" dir "$(SolutionDir)mRemoteNG\bin\x64\$(Configuration)" -ag -nologo -dr INSTALLDIR -var var.HarvestPath -srd -scom -sreg -cg MandatoryComponents -template fragment -out "$(ProjectDir)Fragments\FilesFragment.wxs" -t "$(ProjectDir)Filters\Harvest_Filter.xslt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>powershell -noprofile -command "sleep 2"
+    <PostBuildEvent>powershell -noprofile -command "sleep 1"
+
 REM powershell.exe -ExecutionPolicy Bypass -File "$(SolutionDir)Tools\postbuild_installer.ps1" -SolutionDir "$(SolutionDir)\" -TargetDir "$(TargetDir)\" -TargetFileName "mRemoteNG.exe" -ConfigurationName "$(ConfigurationName)" -CertificatePath "$(CertPath)" -CertificatePassword "$(CertPassword)" -ExcludeFromSigning "PuTTYNG.exe"</PostBuildEvent>
   </PropertyGroup>
 </Project>
