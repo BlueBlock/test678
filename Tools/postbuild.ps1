@@ -56,8 +56,9 @@ Write-Output "-Begin Release Portable 2"
 
 
 Write-Output $ConfigurationName
+Write-Output "env:APPVEYOR_PROJECT_NAME"
 Write-Output $env:APPVEYOR_PROJECT_NAME
-Write-Output $([string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER))
+Write-Output $($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)")
 Write-Output $env:WEBSITE_TARGET_OWNER
 Write-Output $([string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY))
 Write-Output $env:WEBSITE_TARGET_REPOSITORY
