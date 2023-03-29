@@ -46,6 +46,8 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 & "$PSScriptRoot\rename_and_copy_installer.ps1" -SolutionDir $SolutionDir -BuildConfiguration $ConfigurationName.Trim()
 
+Write-Output "ConfigurationName: $ConfigurationName"
+
 if ( ($ConfigurationName -eq "Release") -and  ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY) ) {
 
     & "$PSScriptRoot\create_upg_chk_files.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
