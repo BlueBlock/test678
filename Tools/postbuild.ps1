@@ -52,22 +52,9 @@ New-Item -Path $dstPath -ItemType Directory -Force
 
 Write-Output "Begin mRemoteNG Post Build"
 
-Write-Output "-Begin Release Portable 2"
-
-
-Write-Output $ConfigurationName
-Write-Output "env:APPVEYOR_PROJECT_NAME"
-Write-Output $env:APPVEYOR_PROJECT_NAME
-Write-Output $($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)")
-Write-Output $env:WEBSITE_TARGET_OWNER
-Write-Output $([string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY))
-Write-Output $env:WEBSITE_TARGET_REPOSITORY
-
-
+Write-Output "-Begin Release Portable"
 
 if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)) -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) ) {
-
-    Write-Output "ZZZZZZZ"
 
     & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
 
@@ -83,8 +70,6 @@ if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -not
 
     Write-Output "-End Release Portable"
 
-} else {
-    Write-Output "IT WAS FALSE!"
 }
 
 
