@@ -21,7 +21,7 @@ $ConfigurationName = $ConfigurationName.Trim()
 Write-Output "Config Name (trimmed): '$($ConfigurationName)'"
 $exe = Join-Path -Path $TargetDir -ChildPath $TargetFileName
 $version = ((Get-Item -Path $exe).VersionInfo | Select-Object -Property ProductVersion)."ProductVersion"
-Write-Output "Version is $($version) $(Get-Item -Path $exe).VersionInfo $(Select-Object -Property ProductVersion).ProductVersion)"
+Write-Output "Version is $($version) $($(Get-Item -Path $exe).VersionInfo) $($(Select-Object -Property ProductVersion).ProductVersion)"
 
 # determine update channel
 if ($env:APPVEYOR_PROJECT_NAME -match "(Nightly)") {
