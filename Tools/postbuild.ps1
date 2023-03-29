@@ -50,9 +50,19 @@ New-Item -Path $dstPath -ItemType Directory -Force
 # $RunInstaller = $TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\"
 # $RunPortable = ( ($Targetdir -match "\\mRemoteNG\\bin\\") -and -not ($TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\") )
 
+Write-Output "Begin mRemoteNG Post Build"
+
 Write-Output "-Begin Release Portable"
 
-if ( ($ConfigurationName -eq "Release") -and  ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY) ) {
+
+Write-Output $ConfigurationName
+Write-Output $env:APPVEYOR_PROJECT_NAME
+Write-Output [string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)
+Write-Output [string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)
+
+
+
+if ( ($ConfigurationName -eq "Release") -and ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY) ) {
 
     write-host "ZZZZZZZ"
 
