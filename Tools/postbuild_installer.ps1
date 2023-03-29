@@ -46,7 +46,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 & "$PSScriptRoot\rename_and_copy_installer.ps1" -SolutionDir $SolutionDir -BuildConfiguration $ConfigurationName.Trim()
 
-Write-Output "Test-Path('C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\Installer.wixproj')"
+Write-Output Test-Path("C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\Installer.wixproj")
 
 if ( ($ConfigurationName.ToUpper() -match "RELEASE") -and (($env:APPVEYOR_PROJECT_NAME).ToUpper() -notcontains "(CI)") -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)) -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) ) {
 
