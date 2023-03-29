@@ -18,15 +18,10 @@ Write-Output "===== Begin $($PSCmdlet.MyInvocation.MyCommand) ====="
 $IsAppVeyor = !([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER))
 
 $ConfigurationName = $ConfigurationName.Trim()
-Write-Output "Config Name (trimmed): '$($ConfigurationName)'"
 $exe = Join-Path -Path $TargetDir -ChildPath $TargetFileName
-$version = ((Get-Item -Path $exe).VersionInfo | Select-Object -Property ProductVersion)."ProductVersion"
-
-Write-Output "*FileVersion: $($(Get-Item -Path $exe).VersionInfo.FileVersion)"
+#$version = ((Get-Item -Path $exe).VersionInfo | Select-Object -Property ProductVersion)."ProductVersion"
 $version = $(Get-Item -Path $exe).VersionInfo.FileVersion
-
-#Write-Output "*VersionInfo: $($(Get-Item -Path $exe).VersionInfo)"
-#Write-Output "*ProductVersion: $($(Select-Object -Property ProductVersion).ProductVersion)"
+Write-Output "FileVersion: $version"
 
 
 # determine update channel
