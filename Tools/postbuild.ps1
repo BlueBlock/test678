@@ -52,7 +52,7 @@ New-Item -Path $dstPath -ItemType Directory -Force
 
 Write-Output "Begin mRemoteNG Post Build"
 
-Write-Output "-Begin Release Portable"
+Write-Output "-Begin Release Portable 2"
 
 
 Write-Output $ConfigurationName
