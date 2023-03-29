@@ -29,7 +29,7 @@ param (
 
 Write-Output ""
 Write-Output "+============================================================+"
-Write-Output "|             Beginning mRemoteNG Post Build                 |"
+Write-Output "|             Beginning mRemoteNG Post Build  2               |"
 Write-Output "+============================================================+"
 Format-Table -AutoSize -Wrap -InputObject @{
     "SolutionDir" = $SolutionDir
@@ -50,9 +50,7 @@ New-Item -Path $dstPath -ItemType Directory -Force
 # $RunInstaller = $TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\"
 # $RunPortable = ( ($Targetdir -match "\\mRemoteNG\\bin\\") -and -not ($TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\") )
 
-Write-Output "Begin mRemoteNG Post Build"
-
-Write-Output "-Begin Release Portable"
+Write-Output "-Begin Release Portable 2"
 
 if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)) -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) ) {
 
