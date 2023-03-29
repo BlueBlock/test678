@@ -65,7 +65,7 @@ Write-Output $env:WEBSITE_TARGET_REPOSITORY
 
 
 
-if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY) ) {
+if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)) -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) ) {
 
     write-host "ZZZZZZZ"
 
