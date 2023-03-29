@@ -50,7 +50,7 @@ New-Item -Path $dstPath -ItemType Directory -Force
 # $RunInstaller = $TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\"
 # $RunPortable = ( ($Targetdir -match "\\mRemoteNG\\bin\\") -and -not ($TargetDir -match "\\mRemoteNGInstaller\\Installer\\bin\\") )
 
-Write-Output "-Begin Release Portable 2"
+Write-Output "-Begin Release Portable"
 
 if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)) -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) ) {
 
@@ -62,9 +62,9 @@ if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -not
 
     & "$PSScriptRoot\zip_files.ps1" -SolutionDir $SolutionDir -TargetDir $TargetDir -ConfigurationName $ConfigurationName
 
-    #& "$PSScriptRoot\create_upg_chk_files.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
+    & "$PSScriptRoot\create_upg_chk_files.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
 
-    #& "$PSScriptRoot\update_and_upload_website_release_json_file.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
+    & "$PSScriptRoot\update_and_upload_website_release_json_file.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
 
     Write-Output "-End Release Portable"
 
