@@ -83,6 +83,8 @@ if ( ($ConfigurationName -match "Release") -and ($env:APPVEYOR_PROJECT_NAME -not
 
     Write-Output "-End Release Portable"
 
+} else {
+    Write-Output "IT WAS FALSE!"
 }
 
 
