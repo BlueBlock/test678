@@ -54,7 +54,7 @@ Write-Output "-Begin Release Portable"
 
 if ( ($ConfigurationName -eq "Release") -and  ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)") -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER) -and ![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY) ) {
 
-    
+    write-host "ZZZZZZZ"
 
     & "$PSScriptRoot\tidy_files_for_release.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName
 
