@@ -41,7 +41,8 @@ Format-Table -AutoSize -Wrap -InputObject @{
 }
 
 
-if ( $ConfigurationName -eq "Debug" -and ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {return; } #skip when Debug local developer build
+if ( $ConfigurationName -match "Debug" -and ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {return; } #skip when Debug local developer build
+if ( $env:APPVEYOR_PROJECT_NAME -match "(CI)" -and ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) {return; } #skip when AppVeyor (CI) build
 
 $dstPath = "$($SolutionDir)Release"
 New-Item -Path $dstPath -ItemType Directory -Force
