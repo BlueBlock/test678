@@ -1,4 +1,9 @@
 
+
+
+
+
+
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -15,11 +20,10 @@ using System.Resources;
 [assembly: AssemblyCulture("")]
 
 // Version information
-[assembly: AssemblyVersion("1.77.3.1829")]
-[assembly: AssemblyFileVersion("1.77.3.1829")]
+[assembly: AssemblyVersion("1.77.3.1830")]
+[assembly: AssemblyFileVersion("1.77.3.1830")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
-[assembly: AssemblyInformationalVersion("1.77.3 (Nightly Build 1829)")]
+[assembly: AssemblyInformationalVersion("1.77.3 (Nightly Build 1830)")]
 
 // Logging
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
-
