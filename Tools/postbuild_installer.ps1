@@ -46,26 +46,17 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 & "$PSScriptRoot\rename_and_copy_installer.ps1" -SolutionDir $SolutionDir -BuildConfiguration $ConfigurationName.Trim()
 
-Write-Output "ConfigurationName: $ConfigurationName"
-Write-Output ($ConfigurationName.ToUpper() -match "RELEASE")
-Write-Output ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)")
-Write-Output (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER))
-Write-Output (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY))
-
-
+Write-Output "Test-Path('C:\projects\mremoteng-nb7nb\mRemoteNGInstaller\Installer\Installer.wixproj')"
 
 if ( ($ConfigurationName.ToUpper() -match "RELEASE") -and (($env:APPVEYOR_PROJECT_NAME).ToUpper() -notcontains "(CI)") -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)) -and (![string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) ) {
 
-    Write-Output "1"
     & "$PSScriptRoot\create_upg_chk_files.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
 
-    Write-Output "2"
     & "$PSScriptRoot\update_and_upload_website_release_json_file.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
 
-    Write-Output "3"
-    & "$PSScriptRoot\update_and_upload_assemblyinfocs.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME        
+    & "$PSScriptRoot\update_and_upload_assemblyinfocs.ps1" -WebsiteTargetOwner $env:WEBSITE_TARGET_OWNER -WebsiteTargetRepository $env:WEBSITE_TARGET_REPOSITORY -PreTagName $env:NightlyBuildTagName -TagName $env:APPVEYOR_BUILD_VERSION -ProjectName $env:APPVEYOR_PROJECT_NAME
 
-    Write-Output "4"
+
 }
 
 
