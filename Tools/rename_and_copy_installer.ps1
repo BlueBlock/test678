@@ -5,6 +5,8 @@
     $BuildConfiguration
 )
 
+$ErrorActionPreference = "Stop"
+
 Write-Output ""
 Write-Output "    /===== Begin rename_and_copy_installer =====/"
 
@@ -48,7 +50,7 @@ try
 }
 catch
 {
-    Write-Host "        [Failure!2]" -ForegroundColor red
+    Write-Host "        [Failure!3]" -ForegroundColor red
     Write-Output $Error[0]
     $PSCmdlet.ThrowTerminatingError()
 }
