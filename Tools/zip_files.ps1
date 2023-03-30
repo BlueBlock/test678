@@ -53,7 +53,8 @@ Write-Output "SolutionDir: $SolutionDir"
 
 $tempPdbPath = (New-TemporaryDirectory)[0]
 foreach ($pdbFile in $pdbFiles) {
-    Write-Output "pdbFile: $($(pdbFile).FullName)"
+    Write-Output "pdbFile:"
+    Write-Output $pdbFile.FullName
     if (($pdbFile.FullName).Contains("\$ConfigurationName\")) {
         Copy-Item $pdbFile.FullName -Destination $tempPdbPath -Force
     }
