@@ -47,14 +47,9 @@ if($IsAppVeyor) {
 # Package debug symbols zip file
 Write-Output "Packaging debug symbols"
 $zipFilePrefix = "mRemoteNG-symbols"
-
 $pdbFiles = Get-ChildItem -Path  $SolutionDir -Filter *.pdb -Recurse
-Write-Output "SolutionDir: $SolutionDir"
-
 $tempPdbPath = (New-TemporaryDirectory)[0]
 foreach ($pdbFile in $pdbFiles) {
-    Write-Output "pdbFile:"
-    Write-Output $pdbFile.FullName
     if (($pdbFile.FullName).Contains("\$ConfigurationName\")) {
         Copy-Item $pdbFile.FullName -Destination $tempPdbPath -Force
     }
