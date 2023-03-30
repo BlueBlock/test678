@@ -12,6 +12,14 @@ if ($IsAppVeyor) {
     #New-Item -Path "$Env:APPVEYOR_BUILD_FOLDER\Release" -ItemType Directory -Force
 }
 
+function New-TemporaryDirectory {
+    $parent = [System.IO.Path]::GetTempPath()
+    [string] $name = [System.Guid]::NewGuid()
+    $fullTempPath = (Join-Path $parent $name)
+    New-Item -ItemType Directory -Path $fullTempPath
+    return $fullTempPath
+}
+
 Function ConvertFrom-Base64($base64) {
     return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64))
 }
