@@ -49,6 +49,7 @@ Write-Output "Packaging debug symbols"
 $zipFilePrefix = "mRemoteNG-symbols"
 
 $pdbFiles = Get-ChildItem -Path  $SolutionDir -Filter *.pdb -Recurse
+Write-Output "SolutionDir: $SolutionDir"
 
 $tempPdbPath = (New-TemporaryDirectory)[0]
 foreach ($pdbFile in $pdbFiles) {
