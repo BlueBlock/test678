@@ -52,6 +52,7 @@ $pdbFiles = Get-ChildItem -Path  $SolutionDir -Filter *.pdb -Recurse
 
 $tempPdbPath = (New-TemporaryDirectory)[0]
 foreach ($pdbFile in $pdbFiles) {
+    Write-Output "pdbFile: $pdbFile"
     if (($pdbFile.FullName).Contains("\$ConfigurationName\")) {
         Copy-Item $pdbFile.FullName -Destination $tempPdbPath -Force
     }
