@@ -52,6 +52,7 @@ catch
     Write-Host "        [Failure!3]" -ForegroundColor red
     Write-Output $Error[0]
     $PSCmdlet.ThrowTerminatingError()
+    return 1
 }
 
 
