@@ -47,23 +47,28 @@ if($IsAppVeyor) {
 # Package debug symbols zip file
 Write-Output "Packaging debug symbols"
 $zipFilePrefix = "mRemoteNG-symbols"
-$debugFile = Join-Path -Path $TargetDir -ChildPath "mRemoteNG.pdb"
-# AppVeyor build
-if ($IsAppVeyor) {
-    $outputZipPath = Join-Path -Path $SolutionDir -ChildPath "Release\$zipFilePrefix-$($ModifiedVersion).zip"
-    7z a $outputZipPath $debugFile
-}
-# Local build
-else {
-    if (!(Test-Path -Path $debugFile -PathType Leaf))
-    {
-        $outputZipPath = "$($SolutionDir)Release\$zipFilePrefix-$($ModifiedVersion).zip"
-        Compress-Archive $debugFile $outputZipPath -Force
-    } else {
-        Write-Output "File do not exist:" $debugFile", nothing to compress"
+
+$pdbFiles = Get-ChildItem -Path  $SolutionDir -Filter *.pdb -Recurse
+
+$tempPdbPath = (New-TemporaryDirectory)[0]
+foreach ($pdbFile in $pdbFiles) {
+    if (($pdbFile.FullName).Contains("\$ConfigurationName\")) {
+        Copy-Item $pdbFile.FullName -Destination $tempPdbPath -Force
     }
 }
-Remove-Item $debugFile
+
+if ($IsAppVeyor) {
+    # AppVeyor build
+    $outputZipPath = Join-Path -Path $SolutionDir -ChildPath "Release\$zipFilePrefix-$($ModifiedVersion).zip"
+    Write-Output "outputZipPath: $outputZipPath"
+    7z a $outputZipPath "$tempPdbPath\*.pdb"
+} 
+# else {
+#     # Local build
+#     $outputZipPath = "$($SolutionDir)Release\$zipFilePrefix-$($ModifiedVersion).zip"
+#     Write-Output "outputZipPath: $outputZipPath"
+#     Compress-Archive -Path $tempPdbPath -DestinationPath $outputZipPath -Force
+# }
 
 
 # Package portable release zip file
@@ -72,6 +77,7 @@ Write-Output "Packaging portable ZIP file"
 if ($IsAppVeyor) {
     $outputZipPath = Join-Path -Path $SolutionDir -ChildPath "Release\mRemoteNG-Portable-$($ModifiedVersion).zip"
     7z a -bt -bd -bb1 -mx=9 -tzip -y -r $outputZipPath $TargetDir\*
+    Write-Output "Portable ZIP: $outputZipPath"
 }
 # Local build
 else {
@@ -80,7 +86,7 @@ else {
         $outputZipPath="$($SolutionDir)\Release\mRemoteNG-Portable-$($ModifiedVersion).zip"
         Compress-Archive $Source $outputZipPath -Force
     } else {
-        Write-Output "File do not exist:" $Source", nothing to compress"
+        Write-Output "Files do not exist:" $Source", nothing to compress"
     }
 }
 
