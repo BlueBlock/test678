@@ -49,10 +49,9 @@ try
 }
 catch
 {
-    Write-Host "        [Failure!2]" -ForegroundColor red
+    Write-Host "        [Failure!]" -ForegroundColor red
     Write-Output $Error[0]
-    #$PSCmdlet.ThrowTerminatingError()
-    return
+    $PSCmdlet.ThrowTerminatingError()
 }
 
 
