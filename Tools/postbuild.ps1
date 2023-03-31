@@ -41,6 +41,12 @@ Format-Table -AutoSize -Wrap -InputObject @{
 }
 
 
+Write-Output ($ConfigurationName -match "Release")
+Write-Output ($env:APPVEYOR_PROJECT_NAME -notcontains "(CI)")
+Write-Output ([string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER))
+Write-Output ([string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) 
+
+
 if ( $ConfigurationName -match "Debug" -and ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) { return; } #skip when Debug local developer build
 if ( $env:APPVEYOR_PROJECT_NAME -match "(CI)" -and -not ([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER)) ) { return; } #skip when AppVeyor (CI) build
 
