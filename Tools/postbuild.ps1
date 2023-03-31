@@ -42,7 +42,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 
 Write-Output ($ConfigurationName -match "Release")
-Write-Output ($env:APPVEYOR_PROJECT_NAME -notmatch "(CI)")
+Write-Output ($env:APPVEYOR_PROJECT_NAME -notmatch "(CI)2")
 Write-Output ([string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER))
 Write-Output (-not ([string]::IsNullOrEmpty($env:WEBSITE_TARGET_OWNER)))
 Write-Output ([string]::IsNullOrEmpty($env:WEBSITE_TARGET_REPOSITORY)) 
