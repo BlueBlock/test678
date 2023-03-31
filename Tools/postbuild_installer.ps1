@@ -42,6 +42,9 @@ Format-Table -AutoSize -Wrap -InputObject @{
 
 $IsAppVeyor = !([string]::IsNullOrEmpty($Env:APPVEYOR_BUILD_FOLDER))
 
+Write-Output "(CI)"
+Write-Output (($env:APPVEYOR_PROJECT_NAME).ToUpper() -notcontains "(CI)") 
+
 if ( $IsAppVeyor -and ($ConfigurationName.ToUpper() -match "RELEASE") -and (($env:APPVEYOR_PROJECT_NAME).ToUpper() -notcontains "(CI)") ) {
 
     & "$PSScriptRoot\sign_binaries.ps1" -TargetDir $TargetDir -CertificatePath $CertificatePath -CertificatePassword $CertificatePassword -ConfigurationName $ConfigurationName -Exclude $ExcludeFromSigning -SolutionDir $SolutionDir
